@@ -1,6 +1,7 @@
 package cn.aethli.mineauth.config;
 
 import cn.aethli.mineauth.common.utils.DataUtils;
+import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +37,7 @@ public class MineauthConfig {
   public final ForgeConfigSpec.BooleanValue enableRegister;
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
   public final ForgeConfigSpec.IntValue delay;
+  public final ForgeConfigSpec.ConfigValue<String> language;
 
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
     builder.comment("Server configuration settings").push("server");
@@ -64,6 +66,9 @@ public class MineauthConfig {
             .comment(
                 "delay in seconds a player can authenticate before being automatically kicked from the server.")
             .defineInRange("delay", 60, 1, 1024);
+
+    this.language = builder.comment("language for message").define("language", "en-US");
+
     builder.pop();
 
     databaseConfig = new DatabaseConfig(builder);
@@ -78,10 +83,12 @@ public class MineauthConfig {
         databaseConfig.password.get(),
         databaseConfig.poolSize.get());
     DataUtils.DatabaseInit();
+    I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
   }
 
   @SubscribeEvent
-  public static void onLoad(final ModConfig.Loading configEvent) throws SQLException, ClassNotFoundException {
+  public static void onLoad(final ModConfig.Loading configEvent)
+      throws SQLException, ClassNotFoundException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Loaded mineauth config file");
       afterLoadedConfig();
@@ -89,7 +96,8 @@ public class MineauthConfig {
   }
 
   @SubscribeEvent
-  public static void onFileChange(final ModConfig.Reloading configEvent) throws SQLException, ClassNotFoundException {
+  public static void onFileChange(final ModConfig.Reloading configEvent)
+      throws SQLException, ClassNotFoundException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Forge config just got changed on the file system!");
       afterLoadedConfig();

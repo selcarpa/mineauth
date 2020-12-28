@@ -22,6 +22,7 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 public class RegisterCommand extends BaseCommand<AuthPlayer> {
   private static final List<String> parameters = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger(RegisterCommand.class);
+  public static final String command = "register";
 
   static {
     parameters.add("password");
@@ -29,7 +30,7 @@ public class RegisterCommand extends BaseCommand<AuthPlayer> {
   }
 
   public RegisterCommand() {
-    super("register", parameters);
+    super(command, parameters);
   }
 
   @Override

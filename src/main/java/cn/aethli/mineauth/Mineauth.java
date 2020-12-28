@@ -37,6 +37,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,6 +59,8 @@ public class Mineauth {
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
   private static final Logger LOGGER = LogManager.getLogger();
+
+  private static final List<String> allowCommands = new ArrayList<>();
 
   /**
    * register this mod and initial some database entity metadata
@@ -190,7 +194,6 @@ public class Mineauth {
               vector3d.getZ(),
               playerPreparation.getRotationYaw(),
               playerPreparation.getRotationPitch());
-      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -220,7 +223,7 @@ public class Mineauth {
     CommandSource source = event.getParseResults().getContext().getSource();
     if (source.getEntity() instanceof ServerPlayerEntity) {
       PlayerEntity player = source.asPlayer();
-      if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
+      if (!allowCommands.contains(name)&&!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
         LOGGER.info(
             "Player {} tried to execute /{} without being logged in.",
             player.getName().getString(),
@@ -234,8 +237,11 @@ public class Mineauth {
   @SubscribeEvent
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
     event.getDispatcher().register(new RegisterCommand().getBuilder());
+    allowCommands.add(RegisterCommand.command);
     event.getDispatcher().register(new LoginCommand().getBuilder());
+    allowCommands.add(LoginCommand.command);
     event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
+    allowCommands.add(ChangePasswordCommand.command);
   }
 
   @SubscribeEvent

@@ -9,6 +9,6 @@ public class MessageUtils {
   }
 
   public static void msgToOnePlayerByI18n(PlayerEntity playerEntity, String key) {
-    playerEntity.sendMessage(new StringTextComponent(I18nUtils.getTranslateContent(key)), null);
+     playerEntity.sendMessage(new StringTextComponent(I18nUtils.getTranslateContent(key)),playerEntity.getUniqueID());
   }
 }
