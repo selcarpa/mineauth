@@ -115,7 +115,7 @@ public class Mineauth {
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
-    msgToOnePlayerByI18n("welcome",player);
+    msgToOnePlayerByI18n(player,"welcome");
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)

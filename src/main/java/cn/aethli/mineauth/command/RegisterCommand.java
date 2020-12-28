@@ -56,7 +56,7 @@ public class RegisterCommand extends BaseCommand<AuthPlayer> {
         return 1;
       } else {
         msgToOnePlayerByI18n(player, "error");
-        LOGGER.error("Database insert error,{}",new Gson().toString(authPlayer));
+        LOGGER.error("Database insert error,{}",new Gson().toJson(authPlayer));
         return 0;
       }
     } else {
