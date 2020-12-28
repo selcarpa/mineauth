@@ -1,6 +1,7 @@
 package cn.aethli.mineauth.common.utils;
 
 import cn.aethli.mineauth.Mineauth;
+import cn.aethli.mineauth.command.RegisterCommand;
 import cn.aethli.mineauth.common.converter.BooleanConverter;
 import cn.aethli.mineauth.common.converter.Converter;
 import cn.aethli.mineauth.common.converter.LocalDateTimeConverter;
@@ -15,6 +16,7 @@ import cn.aethli.mineauth.entity.BaseEntity;
 import cn.aethli.mineauth.exception.DataRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +37,7 @@ import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
  */
 public class DataUtils {
   private static final Map<String, Converter<?>> CONVERTER_MAP = new HashMap<>();
+  private static final Logger LOGGER = LogManager.getLogger(DataUtils.class);
 
   static {
     CONVERTER_MAP.put(Boolean.class.getTypeName(), new BooleanConverter());
@@ -140,6 +143,7 @@ public class DataUtils {
     }
     file = new File("mineauth/internalDatabase.mv.db");
     if (!file.exists()) {
+      LOGGER.info("Init h2 database for default config");
       boolean newFile = file.createNewFile();
       if (!newFile) {
         throw new DataRuntimeException("create mineauth initial database fail");

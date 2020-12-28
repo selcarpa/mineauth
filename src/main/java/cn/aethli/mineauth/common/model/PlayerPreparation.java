@@ -4,10 +4,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class PlayerPreparation {
-  private PlayerEntity playerEntity;
-  private Vector3d vector3d;
-  private float rotationYaw;
-  private float rotationPitch;
+  private final PlayerEntity playerEntity;
+  private final Vector3d vector3d;
+  private final float rotationYaw;
+  private final float rotationPitch;
   private boolean registered;
 
   public PlayerPreparation(

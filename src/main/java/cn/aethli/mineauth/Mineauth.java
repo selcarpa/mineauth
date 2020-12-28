@@ -251,6 +251,5 @@ public class Mineauth {
     } catch (Exception exception) {
       LOGGER.error(FORGEMOD, exception.getMessage(), exception);
     }
-    LOGGER.info("Init h2 database for default config");
   }
 }

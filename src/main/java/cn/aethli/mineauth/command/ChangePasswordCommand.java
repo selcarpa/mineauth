@@ -24,7 +24,7 @@ public class ChangePasswordCommand extends BaseCommand<AuthPlayer> {
   }
 
   public ChangePasswordCommand() {
-    super("changepassword", parameters);
+    super("changePassword", parameters);
   }
 
   @Override
