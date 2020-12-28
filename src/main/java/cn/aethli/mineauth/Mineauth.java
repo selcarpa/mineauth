@@ -44,7 +44,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import static cn.aethli.mineauth.common.utils.DataUtils.initialInternalDatabase;
-import static cn.aethli.mineauth.common.utils.MessageUtils.toOnePlayerByI18n;
+import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 @Mod("mineauth")
@@ -53,7 +53,6 @@ public class Mineauth {
 
   public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
       "/assets/mineauth/initial/internalDatabase.mv.db";
-  private static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
   private static final Map<String, AuthPlayer> AUTH_PLAYER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
@@ -96,7 +95,7 @@ public class Mineauth {
     if (event.getEntity() instanceof PlayerEntity
         && event.isCancelable()
         && PLAYER_PREPARATION_MAP.containsKey(event.getEntity().getUniqueID().toString())) {
-      toOnePlayerByI18n((PlayerEntity) event.getEntity(), "login_welcome");
+      msgToOnePlayerByI18n((PlayerEntity) event.getEntity(), "login_welcome");
       event.setCanceled(true);
     }
   }
@@ -109,29 +108,14 @@ public class Mineauth {
    */
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public void onPlayerLoggedInEvent(PlayerEvent.PlayerLoggedInEvent event) {
-    PlayerEntity entity = event.getPlayer();
+    PlayerEntity player = event.getPlayer();
     PlayerPreparation playerPreparation =
         new PlayerPreparation(
-            entity, entity.getPositionVec(), entity.rotationYaw, entity.rotationPitch, false);
-    PLAYER_PREPARATION_MAP.put(entity.getUniqueID().toString(), playerPreparation);
-    // see if player has register
-    AuthPlayer authPlayer = new AuthPlayer();
-    authPlayer.setUuid(entity.getUniqueID().toString());
-    authPlayer = DataUtils.selectOne(authPlayer);
-    String[] messageKey = {"register_welcome"};
-    if (authPlayer != null) {
-      playerPreparation.setRegistered(true);
-      messageKey[0] = "login_welcome";
-    }
-    // send message to remind player to operation
-    scheduler.schedule(
-        () -> {
-          if (PLAYER_PREPARATION_MAP.containsKey(entity.getUniqueID().toString())) {
-            toOnePlayerByI18n(entity, messageKey[0]);
-          }
-        },
-        MineauthConfig.MINEAUTH_CONFIG.delay.get(),
-        TimeUnit.SECONDS);
+            player, player.getPositionVec(), player.rotationYaw, player.rotationPitch, false);
+    String playerId = player.getUniqueID().toString();
+    AUTH_PLAYER_MAP.remove(playerId);
+    PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
+    msgToOnePlayerByI18n("welcome",player);
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -177,7 +161,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
       event.setCanceled(true);
-      toOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -187,7 +171,7 @@ public class Mineauth {
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())
         && event.getSide() == LogicalSide.SERVER) {
       event.setCanceled(true);
-      toOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -206,7 +190,7 @@ public class Mineauth {
               vector3d.getZ(),
               playerPreparation.getRotationYaw(),
               playerPreparation.getRotationPitch());
-      toOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -215,7 +199,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (event.isCancelable() && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())) {
       event.setCanceled(true);
-      toOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -226,7 +210,7 @@ public class Mineauth {
       // avoid toss item without login
       player.inventory.addItemStackToInventory(event.getEntityItem().getItem());
       event.setCanceled(true);
-      toOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "login_welcome");
     }
   }
 
@@ -242,7 +226,7 @@ public class Mineauth {
             player.getName().getString(),
             name);
         event.setCanceled(true);
-        toOnePlayerByI18n(player, "login_welcome");
+        msgToOnePlayerByI18n(player, "login_welcome");
       }
     }
   }

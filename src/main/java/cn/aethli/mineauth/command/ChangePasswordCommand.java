@@ -12,7 +12,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.aethli.mineauth.common.utils.MessageUtils.toOnePlayerByI18n;
+import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class ChangePasswordCommand extends BaseCommand<AuthPlayer> {
   private static final List<String> parameters = new ArrayList<>();
@@ -35,7 +35,7 @@ public class ChangePasswordCommand extends BaseCommand<AuthPlayer> {
     String newPassword = StringArgumentType.getString(context, "newPassword");
     String confirm = StringArgumentType.getString(context, "confirm");
     if (!newPassword.equals(confirm)) {
-      toOnePlayerByI18n(player, "password_confirm_error");
+      msgToOnePlayerByI18n(player, "password_confirm_error");
       return 0;
     } else {
       AuthPlayer authPlayer = new AuthPlayer();

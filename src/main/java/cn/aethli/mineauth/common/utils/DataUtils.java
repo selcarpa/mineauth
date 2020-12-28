@@ -3,7 +3,7 @@ package cn.aethli.mineauth.common.utils;
 import cn.aethli.mineauth.Mineauth;
 import cn.aethli.mineauth.common.converter.BooleanConverter;
 import cn.aethli.mineauth.common.converter.Converter;
-import cn.aethli.mineauth.common.converter.LocalDateConverter;
+import cn.aethli.mineauth.common.converter.LocalDateTimeConverter;
 import cn.aethli.mineauth.common.converter.StringConverter;
 import cn.aethli.mineauth.common.model.ColumnType;
 import cn.aethli.mineauth.common.model.EntityMapper;
@@ -15,7 +15,6 @@ import cn.aethli.mineauth.entity.BaseEntity;
 import cn.aethli.mineauth.exception.DataRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,12 +35,11 @@ import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
  */
 public class DataUtils {
   private static final Map<String, Converter<?>> CONVERTER_MAP = new HashMap<>();
-  private static final Logger LOGGER = LogManager.getLogger();
 
   static {
     CONVERTER_MAP.put(Boolean.class.getTypeName(), new BooleanConverter());
     CONVERTER_MAP.put(String.class.getTypeName(), new StringConverter());
-    CONVERTER_MAP.put(LocalDateTime.class.getTypeName(), new LocalDateConverter());
+    CONVERTER_MAP.put(LocalDateTime.class.getTypeName(), new LocalDateTimeConverter());
   }
 
   public static void DatabaseInit() throws SQLException {
@@ -126,6 +124,11 @@ public class DataUtils {
     tableResultSet.close();
   }
 
+  /**
+   * initialInternalDatabase
+   * @param resource h2 database resource path
+   * @throws IOException if file copy fail
+   */
   public static void initialInternalDatabase(String resource) throws IOException {
     InputStream resourceAsStream = Mineauth.class.getResourceAsStream(resource);
     File file = new File("mineauth");

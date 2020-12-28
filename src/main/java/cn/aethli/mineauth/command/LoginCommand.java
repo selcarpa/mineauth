@@ -13,7 +13,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.aethli.mineauth.common.utils.MessageUtils.toOnePlayerByI18n;
+import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class LoginCommand extends BaseCommand<AuthPlayer> {
   private static final List<String> parameters = new ArrayList<>();
@@ -40,7 +40,7 @@ public class LoginCommand extends BaseCommand<AuthPlayer> {
     if (authPlayer != null) {
       Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
     } else {
-      toOnePlayerByI18n(player, "wrong_password_login");
+      msgToOnePlayerByI18n(player, "wrong_password_login");
     }
     return 1;
   }

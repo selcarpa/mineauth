@@ -3,7 +3,7 @@ package cn.aethli.mineauth.common.converter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateConverter implements Converter<LocalDateTime> {
+public class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
