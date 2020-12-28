@@ -1,0 +1,17 @@
+{
+  "error": "Something was wrong. Please contact the admins.",
+  "register_welcome": "Use /register to sign up or /login to sign in.",
+  "deny": "Please login within %s second.",
+  "banned": "You've been banned. Please contact the admins.",
+  "wrong_password_login": "Wrong password. Please try again.",
+  "wrong_password_change_password": "Wrong old password, Password change fail",
+  "login_welcome": "Welcome to this server. use /login <password> - To login in",
+  "login_usage": "/login <password> - To login in",
+  "login_not_found": "%s has not registered on this server.",
+  "login_success": "Login success! Have fun!",
+  "register_usage": "/register <password> <confirm_password> - To register a third account to login this server.",
+  "register_success": "You are registered and authenticated, have fun!",
+  "change_password_success": "Password changed!",
+  "change_password_usage": "/changepassword <old_password> <new_password> <confirm_password> - Change your password.",
+  "password_confirm_error": "The password confirmation doesn't match. Try again"
+}
