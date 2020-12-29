@@ -5,7 +5,7 @@ import net.minecraft.util.text.StringTextComponent;
 
 public class MessageUtils {
   public static void msgToOnePlayer(PlayerEntity playerEntity, String content) {
-    playerEntity.sendMessage(new StringTextComponent(content), null);
+    playerEntity.sendMessage(new StringTextComponent(content), playerEntity.getUniqueID());
   }
 
   public static void msgToOnePlayerByI18n(PlayerEntity playerEntity, String key) {

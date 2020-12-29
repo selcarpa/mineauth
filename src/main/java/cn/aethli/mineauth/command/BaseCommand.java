@@ -18,7 +18,7 @@ public abstract class BaseCommand<T extends BaseEntity> implements Command<Comma
         Commands.literal(command);
     if (parameters != null) {
       parameters.forEach(
-          parameter -> builder.then(Commands.argument(parameter, StringArgumentType.string())));
+          parameter -> builder.then(Commands.argument(parameter, StringArgumentType.string()).executes(this)));
     }
     builder.executes(this);
   }

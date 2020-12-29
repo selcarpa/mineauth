@@ -32,8 +32,6 @@ public class MineauthConfig {
     MINEAUTH_CONFIG = specPair.getLeft();
   }
 
-  public final ForgeConfigSpec.BooleanValue identifierRequired;
-  public final ForgeConfigSpec.BooleanValue enableLogin;
   public final ForgeConfigSpec.BooleanValue enableRegister;
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
   public final ForgeConfigSpec.IntValue delay;
@@ -41,17 +39,6 @@ public class MineauthConfig {
 
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
     builder.comment("Server configuration settings").push("server");
-
-    this.identifierRequired =
-        builder
-            .comment("Identifier must be provided for registration and authentication")
-            .define("identifierRequired", false);
-
-    this.enableLogin =
-        builder
-            .comment(
-                "Enable or disable the /login command. If disabled, the server will be opened to everyone).")
-            .define("enableLogin", true);
 
     this.enableRegister =
         builder.comment("Enable or disable the /register command.").define("enableRegister", true);
@@ -67,7 +54,7 @@ public class MineauthConfig {
                 "delay in seconds a player can authenticate before being automatically kicked from the server.")
             .defineInRange("delay", 60, 1, 1024);
 
-    this.language = builder.comment("language for message").define("language", "en-US");
+    this.language = builder.comment("language for message(en-US,zh-CN)").define("language", "en-US");
 
     builder.pop();
 
