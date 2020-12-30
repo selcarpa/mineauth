@@ -52,7 +52,7 @@ public class MineauthConfig {
         builder
             .comment(
                 "delay in seconds a player can authenticate before being automatically kicked from the server.")
-            .defineInRange("delay", 60, 1, 1024);
+            .defineInRange("delay", 60, 30, 600);
 
     this.language = builder.comment("language for message(en-US,zh-CN)").define("language", "en-US");
 

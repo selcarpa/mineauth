@@ -5,7 +5,7 @@ import cn.aethli.mineauth.command.ChangePasswordCommand;
 import cn.aethli.mineauth.command.LoginCommand;
 import cn.aethli.mineauth.command.RegisterCommand;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
-import cn.aethli.mineauth.common.utils.DataUtils;
+import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
 import cn.aethli.mineauth.config.MineauthConfig;
 import cn.aethli.mineauth.entity.AuthPlayer;
@@ -13,7 +13,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SDisconnectPacket;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -55,6 +57,7 @@ public class Mineauth {
 
   public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
       "/assets/mineauth/initial/internalDatabase.mv.db";
+  private static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
   private static final Map<String, AuthPlayer> AUTH_PLAYER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
@@ -119,7 +122,22 @@ public class Mineauth {
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
-    msgToOnePlayerByI18n(player,"welcome");
+    msgToOnePlayerByI18n(player, "welcome");
+    scheduler.schedule(
+        () -> {
+          if (PLAYER_PREPARATION_MAP.containsKey(playerId)) {
+            PLAYER_PREPARATION_MAP.remove(playerId);
+            AUTH_PLAYER_MAP.remove(playerId);
+            ((ServerPlayerEntity) event.getPlayer())
+                .connection.sendPacket(
+                    new SDisconnectPacket(
+                        new TranslationTextComponent(
+                            I18nUtils.getTranslateContent("deny"),
+                            MineauthConfig.MINEAUTH_CONFIG.delay.get())));
+          }
+        },
+        MineauthConfig.MINEAUTH_CONFIG.delay.get(),
+        TimeUnit.SECONDS);
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -223,7 +241,9 @@ public class Mineauth {
     CommandSource source = event.getParseResults().getContext().getSource();
     if (source.getEntity() instanceof ServerPlayerEntity) {
       PlayerEntity player = source.asPlayer();
-      if (!allowCommands.contains(name)&&!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
+      if (!allowCommands.contains(name)
+          && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())
+          && event.isCancelable()) {
         LOGGER.info(
             "Player {} tried to execute /{} without being logged in.",
             player.getName().getString(),
@@ -238,10 +258,14 @@ public class Mineauth {
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
     event.getDispatcher().register(new RegisterCommand().getBuilder());
     allowCommands.add(RegisterCommand.command);
-    event.getDispatcher().register(new LoginCommand().getBuilder());
-    allowCommands.add(LoginCommand.command);
-    event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
-    allowCommands.add(ChangePasswordCommand.command);
+    if (MineauthConfig.MINEAUTH_CONFIG.enableRegister.get()) {
+      event.getDispatcher().register(new LoginCommand().getBuilder());
+      allowCommands.add(LoginCommand.command);
+    }
+    if (MineauthConfig.MINEAUTH_CONFIG.enableChangePassword.get()) {
+      event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
+      allowCommands.add(ChangePasswordCommand.command);
+    }
   }
 
   @SubscribeEvent

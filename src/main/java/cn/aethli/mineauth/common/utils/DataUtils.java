@@ -1,7 +1,6 @@
 package cn.aethli.mineauth.common.utils;
 
 import cn.aethli.mineauth.Mineauth;
-import cn.aethli.mineauth.command.RegisterCommand;
 import cn.aethli.mineauth.common.converter.BooleanConverter;
 import cn.aethli.mineauth.common.converter.Converter;
 import cn.aethli.mineauth.common.converter.LocalDateTimeConverter;
@@ -129,6 +128,7 @@ public class DataUtils {
 
   /**
    * initialInternalDatabase
+   *
    * @param resource h2 database resource path
    * @throws IOException if file copy fail
    */
@@ -226,7 +226,6 @@ public class DataUtils {
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
     Connection connection;
     try {
-      connection = instance.getConnection();
       EntityMapper entityMapper =
           MetadataUtils.getEntityMapperByTypeName(entity.getClass().getTypeName());
       if (entityMapper == null) {
@@ -236,8 +235,10 @@ public class DataUtils {
       String tableName = entityMapper.getTableName();
 
       String sql = "update `" + tableName + "` " + updateStatement;
+      connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();
+      close(null, preparedStatement, connection);
       if (i == 1) {
         return true;
       }
@@ -253,7 +254,6 @@ public class DataUtils {
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
     Connection connection;
     try {
-      connection = instance.getConnection();
       EntityMapper entityMapper =
           MetadataUtils.getEntityMapperByTypeName(entity.getClass().getTypeName());
       if (entityMapper == null) {
@@ -263,6 +263,7 @@ public class DataUtils {
       String tableName = entityMapper.getTableName();
 
       String sql = "select * from `" + tableName + "` where " + whereStatement + " LIMIT 1";
+      connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       ResultSet resultSet = preparedStatement.executeQuery();
       Map<String, String> fieldMap = new HashMap<>();
@@ -272,8 +273,10 @@ public class DataUtils {
         for (int i = 1; i <= count; i++) {
           fieldMap.put(metaData.getColumnLabel(i), resultSet.getString(i));
         }
+        close(resultSet, preparedStatement, connection);
         return (T) mapperBy(aClass, fieldMap);
       } else {
+        close(resultSet, preparedStatement, connection);
         return null;
       }
     } catch (SQLException throwables) {
@@ -288,7 +291,6 @@ public class DataUtils {
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
     Connection connection;
     try {
-      connection = instance.getConnection();
       EntityMapper entityMapper =
           MetadataUtils.getEntityMapperByTypeName(entity.getClass().getTypeName());
       if (entityMapper == null) {
@@ -298,8 +300,10 @@ public class DataUtils {
       String tableName = entityMapper.getTableName();
 
       String sql = "insert into `" + tableName + "` " + insertStatement;
+      connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();
+      close(null, preparedStatement, connection);
       if (i == 1) {
         return true;
       }
@@ -375,5 +379,30 @@ public class DataUtils {
       e.printStackTrace();
     }
     return null;
+  }
+
+  public static void close(
+      ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
+    if (resultSet != null) {
+      try {
+        resultSet.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    if (preparedStatement != null) {
+      try {
+        preparedStatement.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    if (connection != null) {
+      try {
+        connection.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

@@ -16,8 +16,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @MetadataScan(packageName = ("cn.aethli.mineauth.entity"))
@@ -41,7 +44,7 @@ public class DataBaseTest {
     DataUtils.DatabaseInit();
   }
 
-  //cause h2 driver is working, cannot delete test database
+  // cause h2 driver is working, cannot delete test database
   @Test
   @DisplayName("databaseDelete")
   @Order(1000)
@@ -121,5 +124,25 @@ public class DataBaseTest {
     authPlayer.setLastLogin(LocalDateTime.now());
     boolean b = DataUtils.updateById(authPlayer);
     selectOnePlayer();
+  }
+
+  @Test
+  @Order(201)
+  @DisplayName("connectionPoolSwitchDatabase")
+  public void connectionPoolSwitchDatabase() throws SQLException, ClassNotFoundException {
+    List<Connection> connections = new ArrayList<>();
+    ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
+    for (int i = 0; i <= 5; i++) {
+      connections.add(instance.getConnection());
+    }
+    ExpansionAbleConnectionPool.init(
+            "org.h2.Driver",
+            "jdbc:h2:file:./mineauth_test/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE",
+            "root",
+            "admin",
+            2);
+    for (Connection connection : connections) {
+      connection.close();
+    }
   }
 }

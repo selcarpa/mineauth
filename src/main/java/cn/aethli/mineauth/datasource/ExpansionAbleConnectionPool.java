@@ -6,6 +6,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
   private static final ConcurrentLinkedDeque<Connection> POOL = new ConcurrentLinkedDeque<>();
   private static ExpansionAbleConnectionPool connectionPool = null;
   private static boolean initFlag = false;
+  private static String version;
 
   private static String url;
   private static String user;
@@ -32,7 +34,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
    *
    * @return singleton instance
    */
-  public static ExpansionAbleConnectionPool getInstance() {
+  public static synchronized ExpansionAbleConnectionPool getInstance() {
     if (!initFlag) {
       throw new RuntimeException("can not invoke getInstance before init");
     }
@@ -55,7 +57,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
    * @param password password
    */
   public static void init(String driver, String url, String user, String password, int poolSize)
-          throws SQLException, ClassNotFoundException {
+      throws SQLException, ClassNotFoundException {
 
     ExpansionAbleConnectionPool.url = url;
     ExpansionAbleConnectionPool.user = user;
@@ -68,6 +70,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
       POOL.add(conn);
     }
     initFlag = true;
+    version = UUID.randomUUID().toString();
   }
 
   /**
@@ -77,6 +80,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
    */
   public Connection getConnection() throws SQLException {
     if (POOL.size() > 0) {
+      String v = version;
       final Connection connection = POOL.removeFirst();
       return (Connection)
           Proxy.newProxyInstance(
@@ -86,7 +90,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
                 if (!"close".equals(method.getName())) {
                   return method.invoke(connection, args);
                 } else {
-                  POOL.add(connection);
+                  addConnection(connection, v);
                   return null;
                 }
               });
@@ -94,6 +98,17 @@ public class ExpansionAbleConnectionPool implements DataSource {
       return DriverManager.getConnection(url, user, password);
     }
   }
+
+  private void addConnection(Connection connection,String v) throws SQLException {
+    if (version.equals(v)){
+      POOL.add(connection);
+      System.out.println("come back");
+    }else {
+      connection.close();
+      System.out.println("let it go");
+    }
+  }
+
 
   @Override
   public Connection getConnection(String username, String password) {

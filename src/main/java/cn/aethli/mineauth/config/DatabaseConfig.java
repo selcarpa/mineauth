@@ -16,7 +16,6 @@ public class DatabaseConfig {
   public final ForgeConfigSpec.ConfigValue<String> table;
   public final ForgeConfigSpec.ConfigValue<String> driver;
   public final ForgeConfigSpec.IntValue poolSize;
-  public final ForgeConfigSpec.IntValue timeout;
 
   public DatabaseConfig(ForgeConfigSpec.Builder builder) {
     builder.push("Database");
@@ -44,7 +43,9 @@ public class DatabaseConfig {
     this.url =
         builder
             .comment("Server hosting the database(within a clearly schema)")
-            .define("url", "jdbc:h2:file:./mineauth/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE");
+            .define(
+                "url",
+                "jdbc:h2:file:./mineauth/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE");
 
     this.driver = builder.comment("JDBC driver to use").define("driver", "org.h2.Driver");
 
@@ -54,9 +55,10 @@ public class DatabaseConfig {
 
     this.table = builder.comment("Table to be used").define("table", "PLAYERS");
 
-    this.poolSize = builder.comment("PoolSize to be used, also use for thread pool size").defineInRange("poolSize", 2, 1, 10);
-
-    this.timeout = builder.comment("Max value for database response(s)").defineInRange("timeout", 2, 1, 5);
+    this.poolSize =
+        builder
+            .comment("PoolSize to be used, also use for thread pool size")
+            .defineInRange("poolSize", 2, 1, 10);
 
     builder.pop();
   }
