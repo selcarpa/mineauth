@@ -102,10 +102,8 @@ public class ExpansionAbleConnectionPool implements DataSource {
   private void addConnection(Connection connection,String v) throws SQLException {
     if (version.equals(v)){
       POOL.add(connection);
-      System.out.println("come back");
     }else {
       connection.close();
-      System.out.println("let it go");
     }
   }
 
