@@ -1,9 +1,7 @@
 package cn.aethli.mineauth;
 
 import cn.aethli.mineauth.annotation.MetadataScan;
-import cn.aethli.mineauth.command.ChangePasswordCommand;
-import cn.aethli.mineauth.command.LoginCommand;
-import cn.aethli.mineauth.command.RegisterCommand;
+import cn.aethli.mineauth.command.*;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
@@ -23,6 +21,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -95,6 +94,12 @@ public class Mineauth {
    */
   public static void addToAuthPlayerMap(String key, AuthPlayer authPlayer) {
     AUTH_PLAYER_MAP.put(key, authPlayer);
+    // set back food level
+    PlayerPreparation playerPreparation = PLAYER_PREPARATION_MAP.get(key);
+    playerPreparation
+        .getPlayerEntity()
+        .getFoodStats()
+        .setFoodLevel(playerPreparation.getFoodLevel());
     PLAYER_PREPARATION_MAP.remove(key);
   }
 
@@ -118,7 +123,11 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     PlayerPreparation playerPreparation =
         new PlayerPreparation(
-            player, player.getPositionVec(), player.rotationYaw, player.rotationPitch, false);
+            player,
+            player.getPositionVec(),
+            player.rotationYaw,
+            player.rotationPitch,
+            player.getFoodStats().getFoodLevel());
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
@@ -235,6 +244,15 @@ public class Mineauth {
     }
   }
 
+  @SubscribeEvent
+  public void onPlayerContainerEvent(PlayerContainerEvent event) {
+    PlayerEntity player = event.getPlayer();
+    if (event.isCancelable() && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())) {
+      event.setCanceled(true);
+      msgToOnePlayerByI18n(player, "welcome");
+    }
+  }
+
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public void onCommandEvent(CommandEvent event) throws CommandSyntaxException {
     String name = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
@@ -266,6 +284,10 @@ public class Mineauth {
       event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
       allowCommands.add(ChangePasswordCommand.command);
     }
+    event.getDispatcher().register(new RegisterHelpCommand().getBuilder());
+    allowCommands.add(RegisterHelpCommand.command);
+    event.getDispatcher().register(new LoginHelpCommand().getBuilder());
+    allowCommands.add(LoginHelpCommand.command);
   }
 
   @SubscribeEvent

@@ -16,8 +16,8 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class LoginCommand extends BaseCommand<AuthPlayer> {
-  private static final List<String> parameters = new ArrayList<>();
   public static final String command = "login";
+  private static final List<String> parameters = new ArrayList<>();
 
   static {
     parameters.add("password");
@@ -31,17 +31,20 @@ public class LoginCommand extends BaseCommand<AuthPlayer> {
   public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
     CommandSource source = context.getSource();
     PlayerEntity player = source.asPlayer();
-    String password = StringArgumentType.getString(context, "password");
     AuthPlayer authPlayer = new AuthPlayer();
     authPlayer.setUuid(player.getUniqueID().toString());
-    // MD5 is enough
-    String digestedPassword = DigestUtils.md5Hex(password);
-    authPlayer.setPassword(digestedPassword);
     authPlayer = DataUtils.selectOne(authPlayer);
-    if (authPlayer != null) {
-      Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
+    if (authPlayer == null) {
+      msgToOnePlayerByI18n(player, "login_not_found");
     } else {
-      msgToOnePlayerByI18n(player, "login_wrong_password");
+      String password = StringArgumentType.getString(context, "password");
+      String digestedPassword = DigestUtils.md5Hex(password);
+      if (authPlayer.getPassword().equals(digestedPassword)) {
+        Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
+        msgToOnePlayerByI18n(player, "login_success");
+      } else {
+        msgToOnePlayerByI18n(player, "login_wrong_password");
+      }
     }
     return 1;
   }

@@ -8,23 +8,19 @@ public class PlayerPreparation {
   private final Vector3d vector3d;
   private final float rotationYaw;
   private final float rotationPitch;
-  private boolean registered;
+  private final Integer foodLevel;
 
   public PlayerPreparation(
-          PlayerEntity playerEntity, Vector3d vector3d, float rotationYaw, float rotationPitch, boolean registered) {
+      PlayerEntity playerEntity,
+      Vector3d vector3d,
+      float rotationYaw,
+      float rotationPitch,
+      Integer foodLevel) {
     this.playerEntity = playerEntity;
     this.vector3d = vector3d;
     this.rotationYaw = rotationYaw;
     this.rotationPitch = rotationPitch;
-    this.registered = registered;
-  }
-
-  public void setRegistered(boolean registered) {
-    this.registered = registered;
-  }
-
-  public boolean isRegistered() {
-    return registered;
+    this.foodLevel = foodLevel;
   }
 
   public PlayerEntity getPlayerEntity() {
@@ -41,5 +37,9 @@ public class PlayerPreparation {
 
   public float getRotationPitch() {
     return rotationPitch;
+  }
+
+  public Integer getFoodLevel() {
+    return foodLevel;
   }
 }

@@ -46,7 +46,7 @@ public class ChangePasswordCommand extends BaseCommand<AuthPlayer> {
       authPlayer.setPassword(digestedPassword);
       authPlayer = DataUtils.selectOne(authPlayer);
       if (authPlayer == null) {
-        // todo say old password wrong
+        msgToOnePlayerByI18n(player,"change_password_wrong_password");
         return 0;
       }
       digestedPassword = DigestUtils.md5Hex(newPassword);
