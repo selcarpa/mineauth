@@ -1,9 +1,7 @@
 package cn.aethli.mineauth;
 
 import cn.aethli.mineauth.annotation.MetadataScan;
-import cn.aethli.mineauth.command.ChangePasswordCommand;
-import cn.aethli.mineauth.command.LoginCommand;
-import cn.aethli.mineauth.command.RegisterCommand;
+import cn.aethli.mineauth.command.*;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
@@ -11,7 +9,6 @@ import cn.aethli.mineauth.config.MineauthConfig;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SDisconnectPacket;
@@ -27,7 +24,6 @@ import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -98,6 +94,12 @@ public class Mineauth {
    */
   public static void addToAuthPlayerMap(String key, AuthPlayer authPlayer) {
     AUTH_PLAYER_MAP.put(key, authPlayer);
+    // set back food level
+    PlayerPreparation playerPreparation = PLAYER_PREPARATION_MAP.get(key);
+    playerPreparation
+        .getPlayerEntity()
+        .getFoodStats()
+        .setFoodLevel(playerPreparation.getFoodLevel());
     PLAYER_PREPARATION_MAP.remove(key);
   }
 
@@ -105,7 +107,7 @@ public class Mineauth {
     if (event.getEntity() instanceof PlayerEntity
         && event.isCancelable()
         && PLAYER_PREPARATION_MAP.containsKey(event.getEntity().getUniqueID().toString())) {
-      msgToOnePlayerByI18n((PlayerEntity) event.getEntity(), "login_welcome");
+      msgToOnePlayerByI18n((PlayerEntity) event.getEntity(), "welcome");
       event.setCanceled(true);
     }
   }
@@ -121,7 +123,11 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     PlayerPreparation playerPreparation =
         new PlayerPreparation(
-            player, player.getPositionVec(), player.rotationYaw, player.rotationPitch, false);
+            player,
+            player.getPositionVec(),
+            player.rotationYaw,
+            player.rotationPitch,
+            player.getFoodStats().getFoodLevel());
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
@@ -186,7 +192,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -196,7 +202,7 @@ public class Mineauth {
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())
         && event.getSide() == LogicalSide.SERVER) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -223,7 +229,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (event.isCancelable() && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -234,10 +240,9 @@ public class Mineauth {
       // avoid toss item without login
       player.inventory.addItemStackToInventory(event.getEntityItem().getItem());
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
-
 
   @SubscribeEvent
   public void onPlayerContainerEvent(PlayerContainerEvent event) {
@@ -246,7 +251,6 @@ public class Mineauth {
       event.setCanceled(true);
       msgToOnePlayerByI18n(player, "welcome");
     }
-
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -263,23 +267,27 @@ public class Mineauth {
             player.getName().getString(),
             name);
         event.setCanceled(true);
-        msgToOnePlayerByI18n(player, "login_welcome");
+        msgToOnePlayerByI18n(player, "welcome");
       }
     }
   }
 
   @SubscribeEvent
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
-    event.getDispatcher().register(new RegisterCommand().getBuilder());
-    allowCommands.add(RegisterCommand.command);
+    event.getDispatcher().register(new LoginCommand().getBuilder());
+    allowCommands.add(LoginCommand.command);
     if (MineauthConfig.MINEAUTH_CONFIG.enableRegister.get()) {
-      event.getDispatcher().register(new LoginCommand().getBuilder());
-      allowCommands.add(LoginCommand.command);
+      event.getDispatcher().register(new RegisterCommand().getBuilder());
+      allowCommands.add(RegisterCommand.command);
     }
     if (MineauthConfig.MINEAUTH_CONFIG.enableChangePassword.get()) {
       event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
       allowCommands.add(ChangePasswordCommand.command);
     }
+    event.getDispatcher().register(new RegisterHelpCommand().getBuilder());
+    allowCommands.add(RegisterHelpCommand.command);
+    event.getDispatcher().register(new LoginHelpCommand().getBuilder());
+    allowCommands.add(LoginHelpCommand.command);
   }
 
   @SubscribeEvent
