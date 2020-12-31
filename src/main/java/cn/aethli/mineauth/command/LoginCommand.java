@@ -41,7 +41,7 @@ public class LoginCommand extends BaseCommand<AuthPlayer> {
     if (authPlayer != null) {
       Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
     } else {
-      msgToOnePlayerByI18n(player, "wrong_password_login");
+      msgToOnePlayerByI18n(player, "login_wrong_password");
     }
     return 1;
   }

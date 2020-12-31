@@ -102,7 +102,7 @@ public class Mineauth {
     if (event.getEntity() instanceof PlayerEntity
         && event.isCancelable()
         && PLAYER_PREPARATION_MAP.containsKey(event.getEntity().getUniqueID().toString())) {
-      msgToOnePlayerByI18n((PlayerEntity) event.getEntity(), "login_welcome");
+      msgToOnePlayerByI18n((PlayerEntity) event.getEntity(), "welcome");
       event.setCanceled(true);
     }
   }
@@ -183,7 +183,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString()) && event.isCancelable()) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -193,7 +193,7 @@ public class Mineauth {
     if (!AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())
         && event.getSide() == LogicalSide.SERVER) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -220,7 +220,7 @@ public class Mineauth {
     PlayerEntity player = event.getPlayer();
     if (event.isCancelable() && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())) {
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -231,7 +231,7 @@ public class Mineauth {
       // avoid toss item without login
       player.inventory.addItemStackToInventory(event.getEntityItem().getItem());
       event.setCanceled(true);
-      msgToOnePlayerByI18n(player, "login_welcome");
+      msgToOnePlayerByI18n(player, "welcome");
     }
   }
 
@@ -249,18 +249,18 @@ public class Mineauth {
             player.getName().getString(),
             name);
         event.setCanceled(true);
-        msgToOnePlayerByI18n(player, "login_welcome");
+        msgToOnePlayerByI18n(player, "welcome");
       }
     }
   }
 
   @SubscribeEvent
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
-    event.getDispatcher().register(new RegisterCommand().getBuilder());
-    allowCommands.add(RegisterCommand.command);
+    event.getDispatcher().register(new LoginCommand().getBuilder());
+    allowCommands.add(LoginCommand.command);
     if (MineauthConfig.MINEAUTH_CONFIG.enableRegister.get()) {
-      event.getDispatcher().register(new LoginCommand().getBuilder());
-      allowCommands.add(LoginCommand.command);
+      event.getDispatcher().register(new RegisterCommand().getBuilder());
+      allowCommands.add(RegisterCommand.command);
     }
     if (MineauthConfig.MINEAUTH_CONFIG.enableChangePassword.get()) {
       event.getDispatcher().register(new ChangePasswordCommand().getBuilder());

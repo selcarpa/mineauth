@@ -8,19 +8,21 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public abstract class BaseCommand<T extends BaseEntity> implements Command<CommandSource> {
   protected LiteralArgumentBuilder<CommandSource> builder;
 
   public BaseCommand(String command,  List<String> parameters) {
-    this.builder =
-        Commands.literal(command);
+    this.builder = Commands.literal(command);
+    final LiteralArgumentBuilder<CommandSource>[] thisBuilder =
+        new LiteralArgumentBuilder[] {builder};
     if (parameters != null) {
       parameters.forEach(
-          parameter -> builder.then(Commands.argument(parameter, StringArgumentType.string()).executes(this)));
+          parameter ->
+              thisBuilder[0] =
+                  thisBuilder[0].then(Commands.argument(parameter, StringArgumentType.string())));
     }
-    builder.executes(this);
+    thisBuilder[0].executes(this);
   }
 
   public LiteralArgumentBuilder<CommandSource> getBuilder() {
