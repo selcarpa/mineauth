@@ -9,6 +9,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseCommand<T extends BaseEntity> implements Command<CommandSource> {
   protected LiteralArgumentBuilder<CommandSource> builder;
@@ -17,16 +18,14 @@ public abstract class BaseCommand<T extends BaseEntity> implements Command<Comma
     this.builder = Commands.literal(command);
 
     if (null != parameters && !parameters.isEmpty()) {
-      final RequiredArgumentBuilder<CommandSource, String>[] argument =
-          new RequiredArgumentBuilder[] {
-            Commands.argument(parameters.get(0), StringArgumentType.string())
-          };
+      final AtomicReference<RequiredArgumentBuilder<CommandSource, String>> argument =
+          new AtomicReference<>(Commands.argument(parameters.get(0), StringArgumentType.string()));
       parameters.remove(0);
       parameters.forEach(
           parameter ->
-              argument[0] =
-                  argument[0].then(Commands.argument(parameter, StringArgumentType.string())));
-      argument[0].executes(this);
+              argument.set(
+                  argument.get().then(Commands.argument(parameter, StringArgumentType.string()))));
+      argument.get().executes(this);
     } else {
       builder.executes(this);
     }
