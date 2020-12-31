@@ -11,6 +11,7 @@ import cn.aethli.mineauth.config.MineauthConfig;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SDisconnectPacket;
@@ -23,8 +24,10 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -233,6 +236,17 @@ public class Mineauth {
       event.setCanceled(true);
       msgToOnePlayerByI18n(player, "login_welcome");
     }
+  }
+
+
+  @SubscribeEvent
+  public void onPlayerContainerEvent(PlayerContainerEvent event) {
+    PlayerEntity player = event.getPlayer();
+    if (event.isCancelable() && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())) {
+      event.setCanceled(true);
+      msgToOnePlayerByI18n(player, "welcome");
+    }
+
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
