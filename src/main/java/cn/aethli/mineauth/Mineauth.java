@@ -151,7 +151,9 @@ public class Mineauth {
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public void onPlayerLoggedOutEvent(PlayerEvent.PlayerLoggedOutEvent event) {
-    AUTH_PLAYER_MAP.remove(event.getPlayer().getUniqueID().toString());
+    String uuid = event.getPlayer().getUniqueID().toString();
+    AUTH_PLAYER_MAP.remove(uuid);
+    PLAYER_PREPARATION_MAP.remove(uuid);
   }
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
