@@ -1,8 +1,11 @@
 package cn.aethli.mineauth.common.utils;
 
+import cn.aethli.mineauth.Mineauth;
+import cn.aethli.mineauth.annotation.MetadataScan;
 import cn.aethli.mineauth.common.model.EntityMapper;
-import cn.aethli.mineauth.common.model.TableColumn;
 import cn.aethli.mineauth.entity.BaseEntity;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,9 +14,12 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 public class MetadataUtils {
   private static final Map<String, EntityMapper> ENTITY_MAPPER_MAP = new ConcurrentHashMap<>();
+  private static final AtomicBoolean initFlag = new AtomicBoolean(false);
 
   /**
    * init metadata, to cache entity-field map exclude abstract class and non-extends BaseEntity
@@ -25,11 +31,13 @@ public class MetadataUtils {
    */
   public static void initMetadata(String packageName) throws IOException, ClassNotFoundException {
     List<Class<BaseEntity>> classes = getClasses(packageName);
+    System.out.println("-----------------------------");
+    classes.forEach(a -> System.out.println(a.getName()));
     Field[] baseEntityFields = BaseEntity.class.getDeclaredFields();
     classes.forEach(
         aClass -> {
           if (!Modifier.isAbstract(aClass.getModifiers())
-              && BaseEntity.class.isAssignableFrom(aClass)) {
+              /*&& BaseEntity.class.isAssignableFrom(aClass)*/) {
             Set<Field> fields = new HashSet<>(Arrays.asList(aClass.getDeclaredFields()));
             fields.addAll(Arrays.asList(baseEntityFields));
             EntityMapper entityMapper = ENTITY_MAPPER_MAP.get(aClass.getTypeName());
@@ -43,6 +51,21 @@ public class MetadataUtils {
         });
   }
 
+  public static void initMetadata() throws IOException, ClassNotFoundException {
+    synchronized (initFlag) {
+      if (initFlag.get()) {
+        return;
+      }
+      Class<Mineauth> mineauthClass = Mineauth.class;
+      if (mineauthClass.isAnnotationPresent(MetadataScan.class)) {
+        MetadataScan metadataScan = mineauthClass.getAnnotation(MetadataScan.class);
+        for (String packageName : metadataScan.packageName()) {
+          MetadataUtils.initMetadata(packageName);
+        }
+      }
+      initFlag.set(true);
+    }
+  }
 
   /**
    * getEntityMapperByTypeName
@@ -65,18 +88,25 @@ public class MetadataUtils {
   private static <T extends BaseEntity> List<Class<T>> getClasses(String packageName)
       throws ClassNotFoundException, IOException {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    String path = packageName.replace('.', '/');
-    Enumeration<URL> resources = classLoader.getResources(path);
-    List<File> dirs = new ArrayList<>();
-    while (resources.hasMoreElements()) {
-      URL resource = resources.nextElement();
-      dirs.add(new File(resource.getFile()));
-    }
-    ArrayList<Class<T>> classes = new ArrayList<>();
-    for (File directory : dirs) {
-      classes.addAll(findClasses(directory, packageName));
-    }
-    return classes;
+    ClassPath classpath = ClassPath.from(classLoader); // scans the class path used by classloader
+    ImmutableSet<ClassPath.ClassInfo> topLevelClasses = classpath.getTopLevelClasses(packageName);
+    List<? extends Class<?>> collect =
+        topLevelClasses.stream().map(ClassPath.ClassInfo::load).collect(Collectors.toList());
+    return (List<Class<T>>) collect;
+//not works on produce
+//    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//    String path = packageName.replace('.', '/');
+//    Enumeration<URL> resources = classLoader.getResources(path);
+//    List<File> dirs = new ArrayList<>();
+//    while (resources.hasMoreElements()) {
+//      URL resource = resources.nextElement();
+//      dirs.add(new File(resource.getFile()));
+//    }
+//    ArrayList<Class<T>> classes = new ArrayList<>();
+//    for (File directory : dirs) {
+//      classes.addAll(findClasses(directory, packageName));
+//    }
+//    return classes;
   }
 
   /**

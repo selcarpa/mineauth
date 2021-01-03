@@ -44,8 +44,9 @@ public class DataUtils {
     CONVERTER_MAP.put(LocalDateTime.class.getTypeName(), new LocalDateTimeConverter());
   }
 
-  public static void DatabaseInit() throws SQLException {
+  public static void DatabaseInit() throws SQLException, IOException, ClassNotFoundException {
 
+    MetadataUtils.initMetadata();
     tableColumnInit();
 
     ExpansionAbleConnectionPool connectionPool = ExpansionAbleConnectionPool.getInstance();

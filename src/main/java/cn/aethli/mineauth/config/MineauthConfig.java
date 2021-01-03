@@ -10,6 +10,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
@@ -63,7 +64,7 @@ public class MineauthConfig {
   }
 
   /** to reset connection pool */
-  private static void afterLoadedConfig() throws SQLException, ClassNotFoundException {
+  private static void afterLoadedConfig() throws SQLException, ClassNotFoundException, IOException {
     ExpansionAbleConnectionPool.init(
         databaseConfig.driver.get(),
         databaseConfig.url.get(),
@@ -76,7 +77,7 @@ public class MineauthConfig {
 
   @SubscribeEvent
   public static void onLoad(final ModConfig.Loading configEvent)
-      throws SQLException, ClassNotFoundException {
+          throws SQLException, ClassNotFoundException, IOException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Loaded mineauth config file");
       afterLoadedConfig();
@@ -85,7 +86,7 @@ public class MineauthConfig {
 
   @SubscribeEvent
   public static void onFileChange(final ModConfig.Reloading configEvent)
-      throws SQLException, ClassNotFoundException {
+          throws SQLException, ClassNotFoundException, IOException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Forge config just got changed on the file system!");
       afterLoadedConfig();

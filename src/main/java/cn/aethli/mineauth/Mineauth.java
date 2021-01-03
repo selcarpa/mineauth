@@ -71,16 +71,8 @@ public class Mineauth {
    * @throws ClassNotFoundException when some jdk internal class exception
    */
   public Mineauth() throws IOException, ClassNotFoundException {
-    Class<Mineauth> mineauthClass = Mineauth.class;
-    if (mineauthClass.isAnnotationPresent(MetadataScan.class)) {
-      MetadataScan metadataScan = mineauthClass.getAnnotation(MetadataScan.class);
-      for (String packageName : metadataScan.packageName()) {
-        MetadataUtils.initMetadata(packageName);
-      }
-    }
-
     initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
-
+    MetadataUtils.initMetadata();
      ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);
     MinecraftForge.EVENT_BUS.register(this);
   }
