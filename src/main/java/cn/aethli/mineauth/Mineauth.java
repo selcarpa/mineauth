@@ -73,7 +73,7 @@ public class Mineauth {
   public Mineauth() throws IOException, ClassNotFoundException {
     initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
     MetadataUtils.initMetadata();
-     ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);
+    ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);
     MinecraftForge.EVENT_BUS.register(this);
   }
 

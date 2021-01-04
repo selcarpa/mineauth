@@ -40,7 +40,8 @@ public class DataBaseTest {
         "root",
         "admin",
         2);
-    metadataInit();
+//    metadataInit();
+    MetadataUtils.initMetadata();
     DataUtils.DatabaseInit();
   }
 
