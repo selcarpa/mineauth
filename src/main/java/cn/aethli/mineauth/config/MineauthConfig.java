@@ -1,5 +1,7 @@
 package cn.aethli.mineauth.config;
 
+import cn.aethli.mineauth.command.account.ChangePasswordCommand;
+import cn.aethli.mineauth.command.account.RegisterCommand;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
@@ -33,6 +35,8 @@ public class MineauthConfig {
     MINEAUTH_CONFIG = specPair.getLeft();
   }
 
+  public final ForgeConfigSpec.BooleanValue enableAccountModule;
+  public final ForgeConfigSpec.BooleanValue enableLatchModule;
   public final ForgeConfigSpec.BooleanValue enableRegister;
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
   public final ForgeConfigSpec.IntValue delay;
@@ -41,12 +45,22 @@ public class MineauthConfig {
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
     builder.comment("Server configuration settings").push("server");
 
+    this.enableAccountModule =
+        builder
+            .comment("Enable or disable account auth module")
+            .define("enableAccountModule", true);
+
+    this.enableLatchModule =
+        builder.comment("Enable or disable latch module").define("enableLatchModule", true);
+
     this.enableRegister =
-        builder.comment("Enable or disable the /register command.").define("enableRegister", true);
+        builder
+            .comment("Enable or disable the /" + RegisterCommand.command + " command.")
+            .define("enableRegister", true);
 
     this.enableChangePassword =
         builder
-            .comment("Enable or disable the /changepassword command.")
+            .comment("Enable or disable the /" + ChangePasswordCommand.command + " command.")
             .define("enableChangePassword", true);
 
     this.delay =
@@ -77,7 +91,7 @@ public class MineauthConfig {
 
   @SubscribeEvent
   public static void onLoad(final ModConfig.Loading configEvent)
-          throws SQLException, ClassNotFoundException, IOException {
+      throws SQLException, ClassNotFoundException, IOException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Loaded mineauth config file");
       afterLoadedConfig();
@@ -86,7 +100,7 @@ public class MineauthConfig {
 
   @SubscribeEvent
   public static void onFileChange(final ModConfig.Reloading configEvent)
-          throws SQLException, ClassNotFoundException, IOException {
+      throws SQLException, ClassNotFoundException, IOException {
     if (configEvent.getConfig().getFileName().contains("mineauth")) {
       LogManager.getLogger().debug(FORGEMOD, "Forge config just got changed on the file system!");
       afterLoadedConfig();

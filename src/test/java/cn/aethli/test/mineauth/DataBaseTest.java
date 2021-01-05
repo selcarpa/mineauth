@@ -9,7 +9,6 @@ import cn.aethli.mineauth.exception.DataRuntimeException;
 import com.google.gson.Gson;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -22,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static cn.aethli.mineauth.handler.AccountHandler.DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataBaseTest {
@@ -55,7 +56,7 @@ public class DataBaseTest {
 
   public void copyDatabase() throws IOException {
     InputStream resourceAsStream =
-        Mineauth.class.getResourceAsStream(Mineauth.DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
+        Mineauth.class.getResourceAsStream(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
     File file = new File("mineauth_test");
     if (!file.exists()) {
       boolean mkdirFlag = file.mkdir();
@@ -77,7 +78,6 @@ public class DataBaseTest {
       }
     }
   }
-
 
   @Test
   @DisplayName("insertOnePlayer")
@@ -126,11 +126,11 @@ public class DataBaseTest {
       connections.add(instance.getConnection());
     }
     ExpansionAbleConnectionPool.init(
-            "org.h2.Driver",
-            "jdbc:h2:file:./mineauth_test/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE",
-            "root",
-            "admin",
-            2);
+        "org.h2.Driver",
+        "jdbc:h2:file:./mineauth_test/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE",
+        "root",
+        "admin",
+        2);
     for (Connection connection : connections) {
       connection.close();
     }

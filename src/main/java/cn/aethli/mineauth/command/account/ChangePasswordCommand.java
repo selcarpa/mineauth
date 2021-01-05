@@ -1,5 +1,6 @@
-package cn.aethli.mineauth.command;
+package cn.aethli.mineauth.command.account;
 
+import cn.aethli.mineauth.command.BaseCommand;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
-public class ChangePasswordCommand extends BaseCommand<AuthPlayer> {
+public class ChangePasswordCommand extends BaseCommand {
   private static final List<String> parameters = new ArrayList<>();
   public static final String command = "changePassword";
 

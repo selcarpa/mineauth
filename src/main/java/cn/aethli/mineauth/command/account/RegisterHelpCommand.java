@@ -1,7 +1,6 @@
-package cn.aethli.mineauth.command;
+package cn.aethli.mineauth.command.account;
 
-import cn.aethli.mineauth.common.utils.MessageUtils;
-import cn.aethli.mineauth.entity.AuthPlayer;
+import cn.aethli.mineauth.command.BaseCommand;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
@@ -12,11 +11,11 @@ import java.util.List;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.*;
 
-public class LoginHelpCommand extends BaseCommand<AuthPlayer> {
-  public static final String command = "LoginHelp";
+public class RegisterHelpCommand extends BaseCommand {
+  public static final String command = "registerHelp";
   private static final List<String> parameters = new ArrayList<>();
 
-  public LoginHelpCommand() {
+  public RegisterHelpCommand() {
     super(command, parameters);
   }
 
@@ -24,7 +23,7 @@ public class LoginHelpCommand extends BaseCommand<AuthPlayer> {
   public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
     CommandSource source = context.getSource();
     PlayerEntity player = source.asPlayer();
-    msgToOnePlayerByI18n(player, "login_usage");
+    msgToOnePlayerByI18n(player, "register_usage");
     return 1;
   }
 }

@@ -1,6 +1,6 @@
 package cn.aethli.test.mineauth;
 
-import cn.aethli.mineauth.command.RegisterCommand;
+import cn.aethli.mineauth.command.account.RegisterCommand;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;

@@ -1,8 +1,9 @@
-package cn.aethli.mineauth.command;
+package cn.aethli.mineauth.command.account;
 
-import cn.aethli.mineauth.Mineauth;
+import cn.aethli.mineauth.command.BaseCommand;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.entity.AuthPlayer;
+import cn.aethli.mineauth.handler.AccountHandler;
 import com.google.gson.Gson;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
-public class RegisterCommand extends BaseCommand<AuthPlayer> {
+public class RegisterCommand extends BaseCommand {
   public static final String command = "register";
   public static final Pattern PATTERN;
   private static final List<String> parameters = new ArrayList<>();
@@ -68,7 +69,7 @@ public class RegisterCommand extends BaseCommand<AuthPlayer> {
       authPlayer.setUsername(player.getScoreboardName());
       boolean b = DataUtils.insertOne(authPlayer);
       if (b) {
-        Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
+        AccountHandler.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
         msgToOnePlayerByI18n(player, "register_success");
       } else {
         msgToOnePlayerByI18n(player, "error");

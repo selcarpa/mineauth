@@ -10,7 +10,7 @@ import net.minecraft.command.Commands;
 
 import java.util.List;
 
-public abstract class BaseCommand<T extends BaseEntity> implements Command<CommandSource> {
+public abstract class BaseCommand implements Command<CommandSource> {
   protected LiteralArgumentBuilder<CommandSource> builder;
 
   public BaseCommand(String command, List<String> parameters) {

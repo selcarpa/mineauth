@@ -10,6 +10,7 @@
   "register_usage": "/register <password> <confirm password> - To register a account and login this server.",
   "register_success": "You are registered and logged, have fun!",
   "register_repeat": "You have registered yet! Use /login to login.",
+  "register_password_rule": "Password only allow letters and numbers.",
   "change_password_success": "Password changed!",
   "change_password_usage": "/changepassword <old password> <new password> <confirm password> - Change your password.",
   "change_password_wrong_password": "Wrong old password, Password change fail",
