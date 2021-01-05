@@ -1,6 +1,5 @@
 package cn.aethli.mineauth;
 
-import cn.aethli.mineauth.annotation.MetadataScan;
 import cn.aethli.mineauth.command.*;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
@@ -51,7 +50,6 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 @Mod("mineauth")
-@MetadataScan(packageName = ("cn.aethli.mineauth.entity"))
 public class Mineauth {
 
   public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
@@ -68,9 +66,8 @@ public class Mineauth {
    * register this mod and initial some database entity metadata
    *
    * @throws IOException when some jdk internal class exception
-   * @throws ClassNotFoundException when some jdk internal class exception
    */
-  public Mineauth() throws IOException, ClassNotFoundException {
+  public Mineauth() throws IOException {
     initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
     MetadataUtils.initMetadata();
     ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);

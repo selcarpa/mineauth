@@ -3,7 +3,7 @@ package cn.aethli.mineauth.common.model;
 import java.lang.reflect.Field;
 import java.util.Set;
 
-/** @author 93162 */
+/** @author SelcaNyan */
 public class EntityMapper {
   private Set<TableColumn> tableColumns;
   private Set<Field> fields;

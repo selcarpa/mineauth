@@ -1,7 +1,6 @@
 package cn.aethli.test.mineauth;
 
 import cn.aethli.mineauth.Mineauth;
-import cn.aethli.mineauth.annotation.MetadataScan;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
@@ -10,6 +9,7 @@ import cn.aethli.mineauth.exception.DataRuntimeException;
 import com.google.gson.Gson;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@MetadataScan(packageName = ("cn.aethli.mineauth.entity"))
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataBaseTest {
 
@@ -40,7 +39,6 @@ public class DataBaseTest {
         "root",
         "admin",
         2);
-//    metadataInit();
     MetadataUtils.initMetadata();
     DataUtils.DatabaseInit();
   }
@@ -80,15 +78,6 @@ public class DataBaseTest {
     }
   }
 
-  public void metadataInit() throws IOException, ClassNotFoundException {
-    Class<Mineauth> mineauthClass = Mineauth.class;
-    if (mineauthClass.isAnnotationPresent(MetadataScan.class)) {
-      MetadataScan metadataScan = mineauthClass.getAnnotation(MetadataScan.class);
-      for (String packageName : metadataScan.packageName()) {
-        MetadataUtils.initMetadata(packageName);
-      }
-    }
-  }
 
   @Test
   @DisplayName("insertOnePlayer")

@@ -37,6 +37,9 @@ public class LoginCommand extends BaseCommand<AuthPlayer> {
     if (authPlayer == null) {
       msgToOnePlayerByI18n(player, "login_not_found");
     } else {
+      if (authPlayer.getBanned()) {
+        msgToOnePlayerByI18n(player,"banned");
+      }
       String password = StringArgumentType.getString(context, "password");
       String digestedPassword = DigestUtils.md5Hex(password);
       if (authPlayer.getPassword().equals(digestedPassword)) {

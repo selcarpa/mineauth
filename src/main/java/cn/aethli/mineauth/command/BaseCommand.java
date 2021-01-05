@@ -8,7 +8,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class BaseCommand<T extends BaseEntity> implements Command<CommandSource> {
@@ -19,34 +18,18 @@ public abstract class BaseCommand<T extends BaseEntity> implements Command<Comma
 
     if (null != parameters && !parameters.isEmpty()) {
       builder.then(getArgument(parameters));
-//      RequiredArgumentBuilder<CommandSource, String> firstArgument =
-//          Commands.argument(parameters.get(0), StringArgumentType.string());
-//      parameters.remove(0);
-//      if (parameters.isEmpty()) {
-//        builder = builder.then(firstArgument.executes(this));
-//      }else {
-//        RequiredArgumentBuilder<CommandSource, String> lastArgument = firstArgument;
-//        for (Iterator<String> iterator = parameters.iterator(); iterator.hasNext(); ) {
-//          String parameter = iterator.next();
-//          lastArgument =
-//                  lastArgument.then(
-//                          iterator.hasNext()
-//                                  ? Commands.argument(parameter, StringArgumentType.string())
-//                                  : Commands.argument(parameter, StringArgumentType.string()).executes(this));
-//        }
-//        builder.then(firstArgument);
-//      }
     } else {
       builder.executes(this);
     }
   }
 
-  private RequiredArgumentBuilder<CommandSource,String> getArgument(List<String> parameters){
+  private RequiredArgumentBuilder<CommandSource, String> getArgument(List<String> parameters) {
     String parameter = parameters.get(0);
     if (parameters.size() > 1) {
       parameters.remove(0);
-      return Commands.argument(parameter, StringArgumentType.string()).then(getArgument(parameters));
-    }else {
+      return Commands.argument(parameter, StringArgumentType.string())
+          .then(getArgument(parameters));
+    } else {
       return Commands.argument(parameter, StringArgumentType.string()).executes(this);
     }
   }

@@ -28,6 +28,7 @@ public class RegisterCommand extends BaseCommand<AuthPlayer> {
   private static final Logger LOGGER = LogManager.getLogger(RegisterCommand.class);
   private static final String REGEX = "^[A-Za-z0-9!#$%]+$";
   private static final Integer PASSWORD_ALLOW_LENGTH = 16;
+  private static final Gson GSON = new Gson();
 
   static {
     parameters.add("password");
@@ -63,13 +64,15 @@ public class RegisterCommand extends BaseCommand<AuthPlayer> {
       String digestedPassword = DigestUtils.md5Hex(password);
       authPlayer.setPassword(digestedPassword);
       authPlayer.setLastLogin(LocalDateTime.now());
+      authPlayer.setBanned(false);
+      authPlayer.setUsername(player.getScoreboardName());
       boolean b = DataUtils.insertOne(authPlayer);
       if (b) {
         Mineauth.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
         msgToOnePlayerByI18n(player, "register_success");
       } else {
         msgToOnePlayerByI18n(player, "error");
-        LOGGER.error("Database insert error,{}", new Gson().toJson(authPlayer));
+        LOGGER.error("Database insert error,{}", GSON.toJson(authPlayer));
       }
       return 1;
     } else {

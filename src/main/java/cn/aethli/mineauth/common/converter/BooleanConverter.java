@@ -1,6 +1,6 @@
 package cn.aethli.mineauth.common.converter;
 
-/** @author 93162 */
+/** @author SelcaNyan */
 public class BooleanConverter implements Converter<Boolean> {
   @Override
   public Boolean valueOf(String src) {
