@@ -5,8 +5,8 @@
 
 ## Feature
 1. Server-level authentication for both online-mode true/false;
-2. Ban player with sql;
-3. Reset player's password;
+2. Ban player with sql;(coming soon at 1.0)
+3. Reset player's password;(coming soon at 1.0)
 
 ## Installation
 1. Stop your server.
@@ -22,7 +22,7 @@
 ## Database
 - Support: 
     1. h2 database(default) 
-    2. MySQL
+    2. MySQL(have not test yet)
 - References to create table
 ```sql
 create schema MINEAUTH;
@@ -39,10 +39,13 @@ create table PLAYERS
 );
 ``` 
 
-## plan
+## Plan
 - Chest lock support
 - Internationalization support
 - 1.17 support
 
 ## Internationalization
-- coming soon 
+- Coming soon 
+
+## Backup
+- mineauth/ folder is default internal database file, you should keep it.

@@ -11,6 +11,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,8 @@ public class LoginCommand extends BaseCommand {
       if (authPlayer.getPassword().equals(digestedPassword)) {
         AccountHandler.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
         msgToOnePlayerByI18n(player, "login_success");
+        authPlayer.setLastLogin(LocalDateTime.now());
+        DataUtils.updateById(authPlayer);
       } else {
         msgToOnePlayerByI18n(player, "login_wrong_password");
       }
