@@ -41,7 +41,7 @@ public class DataBaseTest {
         "admin",
         2);
     MetadataUtils.initMetadata();
-    DataUtils.DatabaseInit();
+    DataUtils.databaseInit();
   }
 
   // cause h2 driver is working, cannot delete test database

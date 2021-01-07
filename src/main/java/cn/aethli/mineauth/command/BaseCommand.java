@@ -1,6 +1,5 @@
 package cn.aethli.mineauth.command;
 
-import cn.aethli.mineauth.entity.BaseEntity;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -13,7 +12,7 @@ import java.util.List;
 public abstract class BaseCommand implements Command<CommandSource> {
   protected LiteralArgumentBuilder<CommandSource> builder;
 
-  public BaseCommand(String command, List<String> parameters) {
+  protected BaseCommand(String command, List<String> parameters) {
     this.builder = Commands.literal(command);
 
     if (null != parameters && !parameters.isEmpty()) {

@@ -1,5 +1,7 @@
 package cn.aethli.mineauth.datasource;
 
+import cn.aethli.mineauth.exception.DataRuntimeException;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.lang.reflect.Proxy;
@@ -36,16 +38,12 @@ public class ExpansionAbleConnectionPool implements DataSource {
    */
   public static synchronized ExpansionAbleConnectionPool getInstance() {
     if (!initFlag) {
-      throw new RuntimeException("can not invoke getInstance before init");
+      throw new DataRuntimeException("can not invoke getInstance before init");
     }
     if (connectionPool == null) {
       connectionPool = new ExpansionAbleConnectionPool();
     }
     return connectionPool;
-  }
-
-  public static void print() {
-    System.out.println("connection pool size:\t" + POOL.size());
   }
 
   /**
@@ -79,7 +77,7 @@ public class ExpansionAbleConnectionPool implements DataSource {
    * @return a database connection
    */
   public Connection getConnection() throws SQLException {
-    if (POOL.size() > 0) {
+    if (!POOL.isEmpty()) {
       String v = version;
       final Connection connection = POOL.removeFirst();
       return (Connection)

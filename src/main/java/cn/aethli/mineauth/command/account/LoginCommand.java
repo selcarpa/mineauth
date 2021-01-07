@@ -18,7 +18,7 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class LoginCommand extends BaseCommand {
-  public static final String command = "login";
+  public static final String COMMAND = "login";
   private static final List<String> parameters = new ArrayList<>();
 
   static {
@@ -26,7 +26,7 @@ public class LoginCommand extends BaseCommand {
   }
 
   public LoginCommand() {
-    super(command, parameters);
+    super(COMMAND, parameters);
   }
 
   @Override
@@ -39,8 +39,10 @@ public class LoginCommand extends BaseCommand {
     if (authPlayer == null) {
       msgToOnePlayerByI18n(player, "login_not_found");
     } else {
-      if (authPlayer.getBanned()) {
+      final Boolean banned = authPlayer.getBanned();
+      if (banned != null && banned) {
         msgToOnePlayerByI18n(player,"banned");
+        return 0;
       }
       String password = StringArgumentType.getString(context, "password");
       String digestedPassword = DigestUtils.md5Hex(password);
@@ -50,7 +52,7 @@ public class LoginCommand extends BaseCommand {
         authPlayer.setLastLogin(LocalDateTime.now());
         DataUtils.updateById(authPlayer);
       } else {
-        msgToOnePlayerByI18n(player, "login_wrong_password");
+        msgToOnePlayerByI18n(player, "login_wrong_password",player.getScoreboardName());
       }
     }
     return 1;

@@ -17,7 +17,7 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class ChangePasswordCommand extends BaseCommand {
   private static final List<String> parameters = new ArrayList<>();
-  public static final String command = "changePassword";
+  public static final String COMMAND = "changePassword";
 
   static {
     parameters.add("oldPassword");
@@ -26,7 +26,7 @@ public class ChangePasswordCommand extends BaseCommand {
   }
 
   public ChangePasswordCommand() {
-    super(command, parameters);
+    super(COMMAND, parameters);
   }
 
   @Override

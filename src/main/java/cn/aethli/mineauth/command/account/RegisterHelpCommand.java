@@ -12,11 +12,11 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.*;
 
 public class RegisterHelpCommand extends BaseCommand {
-  public static final String command = "registerHelp";
+  public static final String COMMAND = "registerHelp";
   private static final List<String> parameters = new ArrayList<>();
 
   public RegisterHelpCommand() {
-    super(command, parameters);
+    super(COMMAND, parameters);
   }
 
   @Override

@@ -16,12 +16,23 @@ public class I18nUtils {
   private static final Map<String, String> LANGUAGE_MAP = new ConcurrentHashMap<>();
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
+  private I18nUtils() {
+  }
+
   public static void loadLangFile(String language) {
-    // todo copy i18n json to minecraft path
     String path = "/assets/mineauth/json/i18n/" + language.trim() + ".json";
     try (InputStream inputstream = I18nUtils.class.getResourceAsStream(path)) {
-      LANGUAGE_MAP.putAll(
-          gson.fromJson(new InputStreamReader(inputstream, StandardCharsets.UTF_8), Map.class));
+      if (inputstream != null) {
+        LANGUAGE_MAP.putAll(
+            gson.fromJson(new InputStreamReader(inputstream, StandardCharsets.UTF_8), Map.class));
+      } else {
+        path = "./mineauth/i18n/" + language.trim() + ".json";
+        try (InputStream extraInputStream = I18nUtils.class.getResourceAsStream(path)) {
+          LANGUAGE_MAP.putAll(
+              gson.fromJson(
+                  new InputStreamReader(extraInputStream, StandardCharsets.UTF_8), Map.class));
+        }
+      }
     } catch (Exception e) {
       LogManager.getLogger().debug(FORGEMOD, e.getMessage(), e);
     }

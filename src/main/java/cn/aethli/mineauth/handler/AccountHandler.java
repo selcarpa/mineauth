@@ -72,6 +72,11 @@ public class AccountHandler {
     PLAYER_PREPARATION_MAP.remove(key);
   }
 
+  public static AuthPlayer getAuthPlayer(String key) {
+    return AUTH_PLAYER_MAP.get(key);
+  }
+
+
   private void handleLivingEvents(LivingEvent event) {
     if (event.getEntity() instanceof PlayerEntity
         && event.isCancelable()
@@ -246,18 +251,18 @@ public class AccountHandler {
   @SubscribeEvent
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
     event.getDispatcher().register(new LoginCommand().getBuilder());
-    allowCommands.add(LoginCommand.command);
+    allowCommands.add(LoginCommand.COMMAND);
     if (MineauthConfig.MINEAUTH_CONFIG.enableRegister.get()) {
       event.getDispatcher().register(new RegisterCommand().getBuilder());
-      allowCommands.add(RegisterCommand.command);
+      allowCommands.add(RegisterCommand.COMMAND);
     }
     if (MineauthConfig.MINEAUTH_CONFIG.enableChangePassword.get()) {
       event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
-      allowCommands.add(ChangePasswordCommand.command);
+      allowCommands.add(ChangePasswordCommand.COMMAND);
     }
     event.getDispatcher().register(new RegisterHelpCommand().getBuilder());
-    allowCommands.add(RegisterHelpCommand.command);
+    allowCommands.add(RegisterHelpCommand.COMMAND);
     event.getDispatcher().register(new LoginHelpCommand().getBuilder());
-    allowCommands.add(LoginHelpCommand.command);
+    allowCommands.add(LoginHelpCommand.COMMAND);
   }
 }

@@ -10,9 +10,11 @@
   "register_usage": "/register <password> <confirm password> - To register a account and login this server.",
   "register_success": "You are registered and logged, have fun!",
   "register_repeat": "You have registered yet! Use /login to login.",
-  "register_password_rule": "Password only allow letters and numbers.",
+  "register_password_rule": "Password only allow letters, numbers and these symbol(!#$%).",
   "change_password_success": "Password changed!",
-  "change_password_usage": "/changepassword <old password> <new password> <confirm password> - Change your password.",
+  "change_password_usage": "/changePassword <old password> <new password> <confirm password> - Change your password.",
   "change_password_wrong_password": "Wrong old password, Password change fail",
-  "password_confirm_error": "The password confirmation doesn't match. Try again"
+  "password_confirm_error": "The password confirmation doesn't match. Try again",
+  "identifier_not_login_yet": "You have not login yet, Could not set identifier"
+
 }

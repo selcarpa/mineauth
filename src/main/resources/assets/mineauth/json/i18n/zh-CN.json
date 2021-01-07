@@ -10,9 +10,10 @@
   "register_usage": "/register <密码> <确认密码> - 在此服务器注册并登入.",
   "register_success": "您已成功注册并登录, 玩得开心!",
   "register_repeat": "您已经在此服务器注册, 使用 /login 登录服务器.",
-  "register_password_rule": "请使用大小写字母与数字作为密码.",
+  "register_password_rule": "请使用大小写字母数字或这些字符(!#$%)作为密码.",
   "change_password_success": "密码修改成功!",
-  "change_password_usage": "/changepassword <旧密码> <新密码> <确认新密码> - 更改密码.",
+  "change_password_usage": "/changePassword <旧密码> <新密码> <确认新密码> - 更改密码.",
   "change_password_wrong_password": "旧密码输入错误,未更改密码",
-  "password_confirm_error": "确认密码与密码不匹配, 请重试"
+  "password_confirm_error": "确认密码与密码不匹配, 请重试",
+  "identifier_not_login_yet": "尚未登录, 无法设置身份验证"
 }

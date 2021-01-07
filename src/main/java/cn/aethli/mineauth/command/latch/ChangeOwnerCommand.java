@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChangeOwnerCommand extends BaseCommand {
-  public static final String command = "changeOwner";
+  public static final String COMMAND = "changeOwner";
   private static final List<String> parameters = new ArrayList<>();
 
   static {
@@ -17,7 +17,7 @@ public class ChangeOwnerCommand extends BaseCommand {
   }
 
   public ChangeOwnerCommand() {
-    super(command, parameters);
+    super(COMMAND, parameters);
   }
 
   @Override

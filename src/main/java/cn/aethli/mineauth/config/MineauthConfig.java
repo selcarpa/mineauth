@@ -40,6 +40,7 @@ public class MineauthConfig {
   public final ForgeConfigSpec.BooleanValue enableRegister;
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
   public final ForgeConfigSpec.IntValue delay;
+  public final ForgeConfigSpec.BooleanValue enableBanner;
   public final ForgeConfigSpec.ConfigValue<String> language;
 
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
@@ -53,14 +54,17 @@ public class MineauthConfig {
     this.enableLatchModule =
         builder.comment("Enable or disable latch module").define("enableLatchModule", true);
 
+    this.enableBanner =
+        builder.comment("Enable or disable banner on console").define("enableBanner", false);
+
     this.enableRegister =
         builder
-            .comment("Enable or disable the /" + RegisterCommand.command + " command.")
+            .comment("Enable or disable the /" + RegisterCommand.COMMAND + " command.")
             .define("enableRegister", true);
 
     this.enableChangePassword =
         builder
-            .comment("Enable or disable the /" + ChangePasswordCommand.command + " command.")
+            .comment("Enable or disable the /" + ChangePasswordCommand.COMMAND + " command.")
             .define("enableChangePassword", true);
 
     this.delay =
@@ -79,14 +83,16 @@ public class MineauthConfig {
 
   /** to reset connection pool */
   private static void afterLoadedConfig() throws SQLException, ClassNotFoundException, IOException {
-    ExpansionAbleConnectionPool.init(
-        databaseConfig.driver.get(),
-        databaseConfig.url.get(),
-        databaseConfig.user.get(),
-        databaseConfig.password.get(),
-        databaseConfig.poolSize.get());
-    DataUtils.DatabaseInit();
-    I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
+    if (MINEAUTH_CONFIG.enableAccountModule.get()) {
+      ExpansionAbleConnectionPool.init(
+              databaseConfig.driver.get(),
+              databaseConfig.url.get(),
+              databaseConfig.user.get(),
+              databaseConfig.password.get(),
+              databaseConfig.poolSize.get());
+      DataUtils.databaseInit();
+      I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
+    }
   }
 
   @SubscribeEvent

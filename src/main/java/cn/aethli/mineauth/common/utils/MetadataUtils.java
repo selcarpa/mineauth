@@ -3,15 +3,11 @@ package cn.aethli.mineauth.common.utils;
 import cn.aethli.mineauth.common.model.EntityMapper;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import cn.aethli.mineauth.entity.BaseEntity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 

@@ -30,7 +30,7 @@ public class MessageUtils {
   }
 
   /**
-   * Way to format String and avoid MissingFormatArgumentException
+   * Way to format String and avoid MissingFormatArgumentException(copy from stackoverflow)
    *
    * @param stringToFormat origin string
    * @param args argument to replace format specifier

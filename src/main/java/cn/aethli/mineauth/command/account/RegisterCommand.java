@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class RegisterCommand extends BaseCommand {
-  public static final String command = "register";
+  public static final String COMMAND = "register";
   public static final Pattern PATTERN;
   private static final List<String> parameters = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger(RegisterCommand.class);
@@ -38,7 +38,7 @@ public class RegisterCommand extends BaseCommand {
   }
 
   public RegisterCommand() {
-    super(command, parameters);
+    super(COMMAND, parameters);
   }
 
   @Override
@@ -73,7 +73,8 @@ public class RegisterCommand extends BaseCommand {
         msgToOnePlayerByI18n(player, "register_success");
       } else {
         msgToOnePlayerByI18n(player, "error");
-        LOGGER.error("Database insert error,{}", GSON.toJson(authPlayer));
+        final String s = GSON.toJson(authPlayer);
+        LOGGER.error("Database insert error,{}", s);
       }
       return 1;
     } else {

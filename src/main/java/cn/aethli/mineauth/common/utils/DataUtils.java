@@ -44,7 +44,7 @@ public class DataUtils {
     CONVERTER_MAP.put(LocalDateTime.class.getTypeName(), new LocalDateTimeConverter());
   }
 
-  public static void DatabaseInit() throws SQLException, IOException, ClassNotFoundException {
+  public static void databaseInit() throws SQLException {
 
     MetadataUtils.initMetadata();
     tableColumnInit();
@@ -149,11 +149,12 @@ public class DataUtils {
       if (!newFile) {
         throw new DataRuntimeException("create mineauth initial database fail");
       }
-      FileOutputStream fileOutputStream = new FileOutputStream(file);
-      byte[] buf = new byte[1024];
-      int bytesRead;
-      while ((bytesRead = resourceAsStream.read(buf)) > 0) {
-        fileOutputStream.write(buf, 0, bytesRead);
+      try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+        byte[] buf = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = resourceAsStream.read(buf)) > 0) {
+          fileOutputStream.write(buf, 0, bytesRead);
+        }
       }
     }
   }

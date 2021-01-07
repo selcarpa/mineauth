@@ -29,19 +29,24 @@ public class Mineauth {
    * @throws IOException when some jdk internal class exception
    */
   public Mineauth() throws IOException {
-    final AccountHandler accountHandler = new AccountHandler();
     ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);
-    MinecraftForge.EVENT_BUS.register(accountHandler);
+    if (MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get()) {
+      final AccountHandler accountHandler = new AccountHandler();
+      MinecraftForge.EVENT_BUS.register(accountHandler);
+    }
     MinecraftForge.EVENT_BUS.register(this);
-    String path = "/assets/mineauth/Banner.txt";
-    try (InputStream inputstream = Mineauth.class.getResourceAsStream(path);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputstream))) {
-      String line;
-      while ((line = bufferedReader.readLine()) != null) {
-        LOGGER.info(line);
+    //disable banner of default config
+    if (MineauthConfig.MINEAUTH_CONFIG.enableBanner.get()) {
+      String path = "/assets/mineauth/Banner.txt";
+      try (InputStream inputstream = Mineauth.class.getResourceAsStream(path);
+          BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputstream))) {
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+          LOGGER.info(line);
+        }
+      } catch (Exception exception) {
+        LOGGER.error(FORGEMOD, exception.getMessage(), exception);
       }
-    } catch (Exception exception) {
-      LOGGER.error(FORGEMOD, exception.getMessage(), exception);
     }
   }
 
