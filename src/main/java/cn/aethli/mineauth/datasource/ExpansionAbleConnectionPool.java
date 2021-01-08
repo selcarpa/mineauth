@@ -19,10 +19,13 @@ import java.util.logging.Logger;
  */
 public class ExpansionAbleConnectionPool implements DataSource {
 
+  private static final int DEFAULT_TIMEOUT = 30;
   private static final ConcurrentLinkedDeque<Connection> POOL = new ConcurrentLinkedDeque<>();
   private static ExpansionAbleConnectionPool connectionPool = null;
   private static boolean initFlag = false;
   private static String version;
+  private PrintWriter logWriter;
+  private volatile int timeout = DEFAULT_TIMEOUT;
 
   private static String url;
   private static String user;
@@ -108,34 +111,38 @@ public class ExpansionAbleConnectionPool implements DataSource {
 
   @Override
   public Connection getConnection(String username, String password) {
-    return null;
+    throw new DataRuntimeException("Unsupported: getConnection(String username, String password), use getConnection()");
   }
 
   @Override
   public <T> T unwrap(Class<T> iface) {
-    return null;
+    throw new DataRuntimeException("Unsupported: unwrap");
   }
 
   @Override
   public boolean isWrapperFor(Class<?> iface) {
-    return false;
+    throw new DataRuntimeException("Unsupported: isWrapperFor");
   }
 
   @Override
   public PrintWriter getLogWriter() {
-    return null;
+    return logWriter;
   }
 
   @Override
-  public void setLogWriter(PrintWriter out) {}
+  public void setLogWriter(PrintWriter out) {
+    this.logWriter = out;
+  }
 
   @Override
   public int getLoginTimeout() {
-    return 0;
+    return timeout;
   }
 
   @Override
-  public void setLoginTimeout(int seconds) {}
+  public void setLoginTimeout(int seconds) {
+    this.timeout = seconds;
+  }
 
   @Override
   public Logger getParentLogger() {
