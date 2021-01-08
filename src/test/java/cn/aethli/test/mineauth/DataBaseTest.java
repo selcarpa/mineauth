@@ -34,18 +34,18 @@ public class DataBaseTest {
   @Order(1)
   public void databaseInit() throws SQLException, IOException, ClassNotFoundException {
     copyDatabase();
-    //    ExpansionAbleConnectionPool.init(
-    //        "org.h2.Driver",
-    //        "jdbc:h2:file:./mineauth_test/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE",
-    //        "root",
-    //        "admin",
-    //        2);
-    ExpansionAbleConnectionPool.init(
-        "org.h2.Driver",
-        "jdbc:mysql://127.0.0.1:3306/mineauth?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8",
-        "root",
-        "123456",
-        2);
+        ExpansionAbleConnectionPool.init(
+            "org.h2.Driver",
+            "jdbc:h2:file:./mineauth_test/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE",
+            "root",
+            "admin",
+            2);
+//    ExpansionAbleConnectionPool.init(
+//        "org.h2.Driver",
+//        "jdbc:mysql://127.0.0.1:3306/mineauth?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8",
+//        "root",
+//        "123456",
+//        2);
     MetadataUtils.initMetadata();
     DataUtils.databaseInit();
   }
