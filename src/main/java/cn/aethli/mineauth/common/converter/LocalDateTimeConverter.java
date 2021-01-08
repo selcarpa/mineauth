@@ -10,7 +10,7 @@ public class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
   @Override
   public LocalDateTime valueOf(String src) {
-    return LocalDateTime.parse(src, DATE_TIME_FORMATTER);
+    return LocalDateTime.parse(src.substring(0, 19), DATE_TIME_FORMATTER);
   }
 
   @Override

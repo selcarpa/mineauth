@@ -20,7 +20,6 @@ import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 @Mod("mineauth")
 public class Mineauth {
-
   private static final Logger LOGGER = LogManager.getLogger();
 
   /**

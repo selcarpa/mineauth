@@ -108,7 +108,7 @@ public class DataUtils {
                       })
                   .collect(Collectors.joining(","))
               + ");"
-              + playerTableColumn.stream()
+             /* + playerTableColumn.stream()
                   .map(
                       tableColumn ->
                           "comment on column "
@@ -118,7 +118,7 @@ public class DataUtils {
                               + " IS '"
                               + tableColumn.getAlias()
                               + "'")
-                  .collect(Collectors.joining(";"));
+                  .collect(Collectors.joining(";"))*/;
       LogManager.getLogger().debug(FORGEMOD, "createTableSql:");
       LogManager.getLogger().debug(FORGEMOD, createTableSql);
       connection.createStatement().executeUpdate(createTableSql);

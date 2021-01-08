@@ -15,5 +15,6 @@
   "change_password_usage": "/changePassword <旧密码> <新密码> <确认新密码> - 更改密码.",
   "change_password_wrong_password": "旧密码输入错误,未更改密码",
   "password_confirm_error": "确认密码与密码不匹配, 请重试",
-  "identifier_not_login_yet": "尚未登录, 无法设置身份验证"
+  "identifier_not_login_yet": "尚未登录, 无法设置身份验证",
+  "forget_password_has_login_yet": ""
 }

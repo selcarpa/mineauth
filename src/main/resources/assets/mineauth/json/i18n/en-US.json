@@ -15,6 +15,6 @@
   "change_password_usage": "/changePassword <old password> <new password> <confirm password> - Change your password.",
   "change_password_wrong_password": "Wrong old password, Password change fail",
   "password_confirm_error": "The password confirmation doesn't match. Try again",
-  "identifier_not_login_yet": "You have not login yet, Could not set identifier"
-
+  "identifier_not_login_yet": "You have not login yet, Could not set identifier",
+  "forget_password_has_login_yet": ""
 }
