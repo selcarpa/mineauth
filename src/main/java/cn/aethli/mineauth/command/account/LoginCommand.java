@@ -37,7 +37,7 @@ public class LoginCommand extends BaseCommand {
     authPlayer.setUuid(player.getUniqueID().toString());
     authPlayer = DataUtils.selectOne(authPlayer);
     if (authPlayer == null) {
-      msgToOnePlayerByI18n(player, "login_not_found");
+      msgToOnePlayerByI18n(player, "login_not_found",player.getScoreboardName());
     } else {
       final Boolean banned = authPlayer.getBanned();
       if (banned != null && banned) {
@@ -49,6 +49,8 @@ public class LoginCommand extends BaseCommand {
       if (authPlayer.getPassword().equals(digestedPassword)) {
         AccountHandler.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
         msgToOnePlayerByI18n(player, "login_success");
+        //add userName to database
+        authPlayer.setUsername(player.getScoreboardName());
         authPlayer.setLastLogin(LocalDateTime.now());
         DataUtils.updateById(authPlayer);
       } else {

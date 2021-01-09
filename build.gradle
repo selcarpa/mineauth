@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1.1'
+version = '0.2.0'
 group = 'cn.aethli.mineauth' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'mineauth'
 
@@ -102,8 +102,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.4-35.1.7'
     provided "com.h2database:h2:1.4.200"
-//    provided group: 'mysql', name: 'mysql-connector-java', version: '8.0.22'
-    //provided group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.1'
+//    provided group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.1'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0'

@@ -76,7 +76,6 @@ public class AccountHandler {
     return AUTH_PLAYER_MAP.get(key);
   }
 
-
   private void handleLivingEvents(LivingEvent event) {
     if (event.getEntity() instanceof PlayerEntity
         && event.isCancelable()
@@ -189,14 +188,16 @@ public class AccountHandler {
         && event.side == LogicalSide.SERVER) {
       PlayerPreparation playerPreparation =
           PLAYER_PREPARATION_MAP.get(event.player.getUniqueID().toString());
-      Vector3d vector3d = playerPreparation.getVector3d();
-      ((ServerPlayerEntity) event.player)
-          .connection.setPlayerLocation(
-              vector3d.getX(),
-              vector3d.getY(),
-              vector3d.getZ(),
-              playerPreparation.getRotationYaw(),
-              playerPreparation.getRotationPitch());
+      if (playerPreparation != null) {
+        Vector3d vector3d = playerPreparation.getVector3d();
+        ((ServerPlayerEntity) event.player)
+            .connection.setPlayerLocation(
+                vector3d.getX(),
+                vector3d.getY(),
+                vector3d.getZ(),
+                playerPreparation.getRotationYaw(),
+                playerPreparation.getRotationPitch());
+      }
     }
   }
 
@@ -231,17 +232,23 @@ public class AccountHandler {
 
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public void onCommandEvent(CommandEvent event) throws CommandSyntaxException {
-    String name = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
+    String commandLine;
+    try {
+      commandLine = event.getParseResults().getContext().getNodes().get(0).getNode().getName();
+    } catch (IndexOutOfBoundsException e) {
+      // ignore empty command
+      return;
+    }
     CommandSource source = event.getParseResults().getContext().getSource();
     if (source.getEntity() instanceof ServerPlayerEntity) {
       PlayerEntity player = source.asPlayer();
-      if (!allowCommands.contains(name)
+      if (!allowCommands.contains(commandLine)
           && !AUTH_PLAYER_MAP.containsKey(player.getUniqueID().toString())
           && event.isCancelable()) {
         LOGGER.info(
             "Player {} tried to execute /{} without being logged in.",
             player.getName().getString(),
-            name);
+            commandLine);
         event.setCanceled(true);
         msgToOnePlayerByI18n(player, "welcome");
       }
@@ -264,5 +271,9 @@ public class AccountHandler {
     allowCommands.add(RegisterHelpCommand.COMMAND);
     event.getDispatcher().register(new LoginHelpCommand().getBuilder());
     allowCommands.add(LoginHelpCommand.COMMAND);
+    event.getDispatcher().register(new ForgetPassword().getBuilder());
+    allowCommands.add(ForgetPassword.COMMAND);
+    event.getDispatcher().register(new IdentifierSetCommand().getBuilder());
+    allowCommands.add(IdentifierSetCommand.COMMAND);
   }
 }

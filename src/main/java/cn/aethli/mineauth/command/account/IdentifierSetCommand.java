@@ -40,7 +40,8 @@ public class IdentifierSetCommand extends BaseCommand {
       String identifier = StringArgumentType.getString(context, "identifier");
       authPlayer.setIdentifier(identifier);
       DataUtils.updateById(authPlayer);
+      msgToOnePlayerByI18n(player, "identifier_set_success");
     }
-    return 0;
+    return 1;
   }
 }

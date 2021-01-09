@@ -34,11 +34,17 @@ public class Mineauth {
       MinecraftForge.EVENT_BUS.register(accountHandler);
     }
     MinecraftForge.EVENT_BUS.register(this);
+
+  }
+
+  @SubscribeEvent
+  public void onFMLServerStartingEvent(FMLServerStartingEvent event) {
+    LOGGER.info("All Mineauth module online!");
     //disable banner of default config
     if (MineauthConfig.MINEAUTH_CONFIG.enableBanner.get()) {
       String path = "/assets/mineauth/Banner.txt";
       try (InputStream inputstream = Mineauth.class.getResourceAsStream(path);
-          BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputstream))) {
+           BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputstream))) {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
           LOGGER.info(line);
@@ -47,10 +53,5 @@ public class Mineauth {
         LOGGER.error(FORGEMOD, exception.getMessage(), exception);
       }
     }
-  }
-
-  @SubscribeEvent
-  public void onFMLServerStartingEvent(FMLServerStartingEvent event) {
-    LOGGER.info("All Mineauth module online!");
   }
 }
