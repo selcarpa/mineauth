@@ -28,7 +28,6 @@ import net.minecraftforge.fml.LogicalSide;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +36,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static cn.aethli.mineauth.common.utils.DataUtils.initialInternalDatabase;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class AccountHandler {
-  public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
-      "/assets/mineauth/initial/internalDatabase.mv.db";
   private static final List<String> allowCommands = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger();
   private static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
@@ -50,8 +46,7 @@ public class AccountHandler {
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
 
-  public AccountHandler() throws IOException {
-    initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
+  public AccountHandler() {
     MetadataUtils.initMetadata();
   }
 

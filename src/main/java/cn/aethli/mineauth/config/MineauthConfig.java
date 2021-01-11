@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static cn.aethli.mineauth.common.utils.DataUtils.initialInternalDatabase;
 import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 /**
@@ -27,6 +28,8 @@ public class MineauthConfig {
   public static final ForgeConfigSpec FORGE_CONFIG_SPEC;
   public static final MineauthConfig MINEAUTH_CONFIG;
   public static DatabaseConfig databaseConfig;
+  public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
+          "/assets/mineauth/initial/internalDatabase.mv.db";
 
   static {
     final Pair<MineauthConfig, ForgeConfigSpec> specPair =
@@ -84,6 +87,7 @@ public class MineauthConfig {
   /** to reset connection pool */
   private static void afterLoadedConfig() throws SQLException, ClassNotFoundException, IOException {
     if (MINEAUTH_CONFIG.enableAccountModule.get()) {
+      initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
       ExpansionAbleConnectionPool.init(
               databaseConfig.driver.get(),
               databaseConfig.url.get(),

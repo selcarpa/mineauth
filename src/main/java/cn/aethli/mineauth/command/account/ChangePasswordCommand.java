@@ -16,17 +16,17 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class ChangePasswordCommand extends BaseCommand {
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
   public static final String COMMAND = "changePassword";
 
   static {
-    parameters.add("oldPassword");
-    parameters.add("newPassword");
-    parameters.add("confirm");
+    PARAMETERS.add("oldPassword");
+    PARAMETERS.add("newPassword");
+    PARAMETERS.add("confirm");
   }
 
   public ChangePasswordCommand() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override

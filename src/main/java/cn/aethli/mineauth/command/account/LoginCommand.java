@@ -19,14 +19,14 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class LoginCommand extends BaseCommand {
   public static final String COMMAND = "login";
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
 
   static {
-    parameters.add("password");
+    PARAMETERS.add("password");
   }
 
   public LoginCommand() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override

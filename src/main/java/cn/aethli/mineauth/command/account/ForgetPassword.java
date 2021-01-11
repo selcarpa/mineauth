@@ -18,14 +18,14 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 public class ForgetPassword extends BaseCommand {
   public static final String COMMAND = "forgetPassword";
   private static final Logger LOGGER = LogManager.getLogger();
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
   private static final String filename = "out.txt";
 
   static {
   }
 
   public ForgetPassword() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override
@@ -37,6 +37,7 @@ public class ForgetPassword extends BaseCommand {
     if (authPlayer != null) {
       msgToOnePlayerByI18n(player, "forget_password_has_login_yet");
     } else {
+
     }
     return 0;
   }

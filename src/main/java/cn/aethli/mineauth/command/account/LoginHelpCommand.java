@@ -13,10 +13,10 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.*;
 
 public class LoginHelpCommand extends BaseCommand {
   public static final String COMMAND = "LoginHelp";
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
 
   public LoginHelpCommand() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override

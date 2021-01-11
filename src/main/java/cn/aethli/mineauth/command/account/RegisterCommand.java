@@ -25,20 +25,20 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 public class RegisterCommand extends BaseCommand {
   public static final String COMMAND = "register";
   public static final Pattern PATTERN;
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger(RegisterCommand.class);
   private static final String REGEX = "^[A-Za-z0-9!#$%]+$";
   private static final Integer PASSWORD_ALLOW_LENGTH = 16;
   private static final Gson GSON = new Gson();
 
   static {
-    parameters.add("password");
-    parameters.add("confirm");
+    PARAMETERS.add("password");
+    PARAMETERS.add("confirm");
     PATTERN = Pattern.compile(REGEX);
   }
 
   public RegisterCommand() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override

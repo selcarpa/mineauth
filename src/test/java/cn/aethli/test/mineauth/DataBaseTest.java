@@ -3,6 +3,7 @@ package cn.aethli.test.mineauth;
 import cn.aethli.mineauth.Mineauth;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
+import cn.aethli.mineauth.config.MineauthConfig;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import cn.aethli.mineauth.exception.DataRuntimeException;
@@ -22,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static cn.aethli.mineauth.handler.AccountHandler.DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataBaseTest {
@@ -62,7 +62,7 @@ public class DataBaseTest {
 
   public void copyDatabase() throws IOException {
     InputStream resourceAsStream =
-        Mineauth.class.getResourceAsStream(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
+        Mineauth.class.getResourceAsStream(MineauthConfig.DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
     File file = new File("mineauth_test");
     if (!file.exists()) {
       boolean mkdirFlag = file.mkdir();

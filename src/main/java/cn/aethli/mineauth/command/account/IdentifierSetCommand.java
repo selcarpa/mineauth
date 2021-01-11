@@ -18,14 +18,14 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 public class IdentifierSetCommand extends BaseCommand {
   public static final String COMMAND = "identifierSet";
 
-  private static final List<String> parameters = new ArrayList<>();
+  private static final List<String> PARAMETERS = new ArrayList<>();
 
   static {
-    parameters.add("identifier");
+    PARAMETERS.add("identifier");
   }
 
   public IdentifierSetCommand() {
-    super(COMMAND, parameters);
+    super(COMMAND, PARAMETERS);
   }
 
   @Override
