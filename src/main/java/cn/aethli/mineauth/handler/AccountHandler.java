@@ -5,6 +5,7 @@ import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
 import cn.aethli.mineauth.config.MineauthConfig;
+import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
@@ -25,6 +26,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -270,5 +272,10 @@ public class AccountHandler {
     allowCommands.add(ForgetPassword.COMMAND);
     event.getDispatcher().register(new IdentifierSetCommand().getBuilder());
     allowCommands.add(IdentifierSetCommand.COMMAND);
+  }
+
+  @SubscribeEvent
+  public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) {
+    scheduler.shutdown();
   }
 }

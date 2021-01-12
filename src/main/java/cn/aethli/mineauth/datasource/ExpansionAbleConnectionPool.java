@@ -1,6 +1,5 @@
 package cn.aethli.mineauth.datasource;
 
-import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.exception.DataRuntimeException;
 import org.apache.logging.log4j.LogManager;
 
@@ -27,12 +26,11 @@ public class ExpansionAbleConnectionPool implements DataSource {
   private static ExpansionAbleConnectionPool connectionPool = null;
   private static boolean initFlag = false;
   private static String version;
-  private PrintWriter logWriter;
-  private volatile int timeout = DEFAULT_TIMEOUT;
-
   private static String url;
   private static String user;
   private static String password;
+  private PrintWriter logWriter;
+  private volatile int timeout = DEFAULT_TIMEOUT;
 
   /** hidden construct method */
   private ExpansionAbleConnectionPool() {}
@@ -67,6 +65,16 @@ public class ExpansionAbleConnectionPool implements DataSource {
     ExpansionAbleConnectionPool.user = user;
     ExpansionAbleConnectionPool.password = password;
 
+    if (initFlag) {
+      POOL.forEach(
+              connection -> {
+                try {
+                  connection.close();
+                } catch (SQLException e) {
+                  e.printStackTrace();
+                }
+              });
+    }
     // init driver
     try {
       Class.forName(driver);
@@ -80,6 +88,19 @@ public class ExpansionAbleConnectionPool implements DataSource {
     }
     initFlag = true;
     version = UUID.randomUUID().toString();
+  }
+
+  public static void clear() {
+    version = UUID.randomUUID().toString();
+    POOL.forEach(
+        connection -> {
+          try {
+            connection.close();
+          } catch (SQLException e) {
+            e.printStackTrace();
+          }
+        });
+    initFlag = false;
   }
 
   /**
@@ -108,18 +129,18 @@ public class ExpansionAbleConnectionPool implements DataSource {
     }
   }
 
-  private void addConnection(Connection connection,String v) throws SQLException {
-    if (version.equals(v)){
+  private void addConnection(Connection connection, String v) throws SQLException {
+    if (version.equals(v)) {
       POOL.add(connection);
-    }else {
+    } else {
       connection.close();
     }
   }
 
-
   @Override
   public Connection getConnection(String username, String password) {
-    throw new DataRuntimeException("Unsupported: getConnection(String username, String password), use getConnection()");
+    throw new DataRuntimeException(
+        "Unsupported: getConnection(String username, String password), use getConnection()");
   }
 
   @Override
