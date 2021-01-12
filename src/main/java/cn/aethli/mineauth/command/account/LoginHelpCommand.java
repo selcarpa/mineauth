@@ -12,7 +12,7 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.*;
 
 public class LoginHelpCommand extends BaseCommand {
-  public static final String COMMAND = "LoginHelp";
+  public static final String COMMAND = "loginHelp";
   private static final List<String> PARAMETERS = new ArrayList<>();
 
   public LoginHelpCommand() {

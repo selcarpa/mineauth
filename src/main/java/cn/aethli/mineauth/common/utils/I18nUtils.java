@@ -16,9 +16,7 @@ public class I18nUtils {
   private static final Map<String, String> LANGUAGE_MAP = new ConcurrentHashMap<>();
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
-  private I18nUtils() {
-  }
-
+  /** @param language language file name with out ".json" */
   public static void loadLangFile(String language) {
     String path = "/assets/mineauth/json/i18n/" + language.trim() + ".json";
     try (InputStream inputstream = I18nUtils.class.getResourceAsStream(path)) {

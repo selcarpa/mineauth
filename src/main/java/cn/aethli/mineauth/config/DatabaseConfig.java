@@ -18,7 +18,7 @@ public class DatabaseConfig {
   public final ForgeConfigSpec.IntValue poolSize;
 
   public DatabaseConfig(ForgeConfigSpec.Builder builder) {
-    builder.push("Database");
+    builder.comment("database configuration setting").push("database");
     this.columnIdentifier =
         builder.comment("Column for the identifier").define("columnIdentifier", "EMAIL");
 
@@ -47,7 +47,12 @@ public class DatabaseConfig {
                 "url",
                 "jdbc:h2:file:./mineauth/internalDatabase;SCHEMA=MINEAUTH;AUTO_SERVER=TRUE;AUTO_RECONNECT=TRUE");
 
-    this.driver = builder.comment("JDBC driver to use").define("driver", "org.h2.Driver");
+    this.driver =
+        builder
+            .comment("JDBC driver to use")
+            .define(
+                "driver(org.h2.Driver for h2 database,org.mariadb.jdbc.Driver for mysql/mariadb)",
+                "org.h2.Driver");
 
     this.user = builder.comment("Database user").define("user", "root");
 
@@ -57,7 +62,7 @@ public class DatabaseConfig {
 
     this.poolSize =
         builder
-            .comment("PoolSize to be used, also use for thread pool size")
+            .comment("PoolSize to be used")
             .defineInRange("poolSize", 2, 1, 10);
 
     builder.pop();

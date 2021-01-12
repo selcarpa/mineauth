@@ -15,6 +15,12 @@ public class MessageUtils {
     playerEntity.sendMessage(new StringTextComponent(content), playerEntity.getUniqueID());
   }
 
+  /**
+   * seed a message to one player
+   * @param playerEntity playerEntity
+   * @param key message key in json
+   * @param args String::format arguments
+   */
   public static void msgToOnePlayerByI18n(
       final PlayerEntity playerEntity, final String key, final Object... args) {
     try {
@@ -33,7 +39,7 @@ public class MessageUtils {
    * Way to format String and avoid MissingFormatArgumentException(copy from stackoverflow)
    *
    * @param stringToFormat origin string
-   * @param args argument to replace format specifier
+   * @param args arguments to replace format specifier
    * @return string
    */
   public static String formatString(final String stringToFormat, final Object... args) {

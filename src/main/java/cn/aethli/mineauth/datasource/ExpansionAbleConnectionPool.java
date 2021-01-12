@@ -1,6 +1,8 @@
 package cn.aethli.mineauth.datasource;
 
+import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.exception.DataRuntimeException;
+import org.apache.logging.log4j.LogManager;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
@@ -19,6 +21,7 @@ import java.util.logging.Logger;
  */
 public class ExpansionAbleConnectionPool implements DataSource {
 
+  private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
   private static final int DEFAULT_TIMEOUT = 30;
   private static final ConcurrentLinkedDeque<Connection> POOL = new ConcurrentLinkedDeque<>();
   private static ExpansionAbleConnectionPool connectionPool = null;
@@ -58,14 +61,19 @@ public class ExpansionAbleConnectionPool implements DataSource {
    * @param password password
    */
   public static void init(String driver, String url, String user, String password, int poolSize)
-      throws SQLException, ClassNotFoundException {
+      throws SQLException {
 
     ExpansionAbleConnectionPool.url = url;
     ExpansionAbleConnectionPool.user = user;
     ExpansionAbleConnectionPool.password = password;
 
     // init driver
-    Class.forName(driver);
+    try {
+      Class.forName(driver);
+    } catch (ClassNotFoundException e) {
+      LOGGER.error(e.getMessage());
+      LOGGER.info("The error above may not cause any exception.");
+    }
     for (int i = 0; i < poolSize; i++) {
       Connection conn = DriverManager.getConnection(url, user, password);
       POOL.add(conn);

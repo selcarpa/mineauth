@@ -1,5 +1,6 @@
 package cn.aethli.mineauth.common.converter;
 
+/** @author SelcaNyan */
 public class StringConverter implements Converter<String> {
 
   @Override

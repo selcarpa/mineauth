@@ -70,6 +70,12 @@ public class DataUtils {
 
     List<String> needColumns =
         playerTableColumn.stream().map(TableColumn::getColumnName).collect(Collectors.toList());
+
+    if (needColumns.size() > needColumns.stream().distinct().count()) {
+      throw new DataRuntimeException(
+          "Got duplicate column name in mineauth-server.toml, please check it");
+    }
+
     if (tableResultSet.isBeforeFirst() && tableResultSet.next()) {
       // column test
       ResultSet columnResultSet =
@@ -81,7 +87,7 @@ public class DataUtils {
       }
       needColumns.removeAll(columnNames);
       if (!needColumns.isEmpty()) {
-        throw new RuntimeException(
+        throw new DataRuntimeException(
             "Specified table exists, but the following column does not exists:"
                 + String.join(",", needColumns));
       }
