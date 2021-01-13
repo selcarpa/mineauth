@@ -9,6 +9,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.logging.Logger;
@@ -61,19 +62,24 @@ public class ExpansionAbleConnectionPool implements DataSource {
   public static void init(String driver, String url, String user, String password, int poolSize)
       throws SQLException {
 
+    LOGGER.info("Connection pool start init!");
+
     ExpansionAbleConnectionPool.url = url;
     ExpansionAbleConnectionPool.user = user;
     ExpansionAbleConnectionPool.password = password;
 
     if (initFlag) {
-      POOL.forEach(
-              connection -> {
-                try {
-                  connection.close();
-                } catch (SQLException e) {
-                  e.printStackTrace();
-                }
-              });
+      synchronized (POOL) {
+        for (Iterator<Connection> iterator = POOL.iterator(); iterator.hasNext(); ) {
+          Connection connection = iterator.next();
+          iterator.remove();
+          try {
+            connection.close();
+          } catch (SQLException e) {
+            e.printStackTrace();
+          }
+        }
+      }
     }
     // init driver
     try {
@@ -92,15 +98,18 @@ public class ExpansionAbleConnectionPool implements DataSource {
 
   public static void clear() {
     version = UUID.randomUUID().toString();
-    POOL.forEach(
-        connection -> {
-          try {
-            connection.close();
-          } catch (SQLException e) {
-            e.printStackTrace();
-          }
-        });
-    initFlag = false;
+    synchronized (POOL) {
+      for (Iterator<Connection> iterator = POOL.iterator(); iterator.hasNext(); ) {
+        Connection connection = iterator.next();
+        iterator.remove();
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+      }
+      initFlag = false;
+    }
   }
 
   /**
