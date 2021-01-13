@@ -39,6 +39,10 @@ public class ForgetPassword extends BaseCommand {
     if (randomAccessFile == null) {
       try {
         File file = new File(PATH_FILE_NAME);
+        //create mineauth dir
+        if (!file.getParentFile().exists()) {
+          file.getParentFile().mkdir();
+        }
         if (!file.exists()) {
           file.createNewFile();
         }
