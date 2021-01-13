@@ -91,7 +91,7 @@ public class ForgetPassword extends BaseCommand {
               .append("\t")
               .append(authPlayer.getIdentifier());
           randomAccessFile.seek(randomAccessFile.length());
-          randomAccessFile.write(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+          randomAccessFile.write(forgetContent.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
           LOGGER.error(e.getMessage());
           LOGGER.debug(e.getMessage(), e);
