@@ -114,23 +114,22 @@ public class DataUtils {
                       })
                   .collect(Collectors.joining(","))
               + ");"
-             /* + playerTableColumn.stream()
-                  .map(
-                      tableColumn ->
-                          "comment on column "
-                              + playerEntityMapper.getTableName()
-                              + "."
-                              + tableColumn.getColumnName()
-                              + " IS '"
-                              + tableColumn.getAlias()
-                              + "'")
-                  .collect(Collectors.joining(";"))*/;
+          /* + playerTableColumn.stream()
+          .map(
+              tableColumn ->
+                  "comment on column "
+                      + playerEntityMapper.getTableName()
+                      + "."
+                      + tableColumn.getColumnName()
+                      + " IS '"
+                      + tableColumn.getAlias()
+                      + "'")
+          .collect(Collectors.joining(";"))*/ ;
       LogManager.getLogger().debug(FORGEMOD, "createTableSql:");
       LogManager.getLogger().debug(FORGEMOD, createTableSql);
       connection.createStatement().executeUpdate(createTableSql);
     }
-    connection.close();
-    tableResultSet.close();
+    close(tableResultSet,null,connection);
   }
 
   /**
@@ -250,8 +249,9 @@ public class DataUtils {
       if (i == 1) {
         return true;
       }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
     }
     return false;
   }
@@ -287,8 +287,9 @@ public class DataUtils {
         close(resultSet, preparedStatement, connection);
         return null;
       }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
     }
     return null;
   }
@@ -315,8 +316,9 @@ public class DataUtils {
       if (i == 1) {
         return true;
       }
-    } catch (SQLException throwables) {
-      throwables.printStackTrace();
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
     }
     return false;
   }
@@ -358,7 +360,8 @@ public class DataUtils {
                       CONVERTER_MAP.get(field.getType().getTypeName()).parse(o)));
             }
           } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            LOGGER.debug(e.getMessage(), e);
           }
         });
     return statementList;
@@ -384,32 +387,36 @@ public class DataUtils {
       }
       return t;
     } catch (InstantiationException | IllegalAccessException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
     }
     return null;
   }
 
   public static void close(
       ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
-    if (resultSet != null) {
+    if (null != resultSet) {
       try {
         resultSet.close();
       } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.error(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
       }
     }
-    if (preparedStatement != null) {
+    if (null != preparedStatement) {
       try {
         preparedStatement.close();
       } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.error(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
       }
     }
-    if (connection != null) {
+    if (null != connection) {
       try {
         connection.close();
       } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.error(e.getMessage());
+        LOGGER.debug(e.getMessage(), e);
       }
     }
   }

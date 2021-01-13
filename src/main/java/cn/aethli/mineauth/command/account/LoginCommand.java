@@ -37,11 +37,11 @@ public class LoginCommand extends BaseCommand {
     authPlayer.setUuid(player.getUniqueID().toString());
     authPlayer = DataUtils.selectOne(authPlayer);
     if (authPlayer == null) {
-      msgToOnePlayerByI18n(player, "login_not_found",player.getScoreboardName());
+      msgToOnePlayerByI18n(player, "login_not_found", player.getScoreboardName());
     } else {
       final Boolean banned = authPlayer.getBanned();
       if (banned != null && banned) {
-        msgToOnePlayerByI18n(player,"banned");
+        msgToOnePlayerByI18n(player, "banned");
         return 0;
       }
       String password = StringArgumentType.getString(context, "password");
@@ -58,7 +58,7 @@ public class LoginCommand extends BaseCommand {
         authPlayer.setLastLogin(LocalDateTime.now());
         DataUtils.updateById(authPlayer);
       } else {
-        msgToOnePlayerByI18n(player, "login_wrong_password",player.getScoreboardName());
+        msgToOnePlayerByI18n(player, "login_wrong_password", player.getScoreboardName());
       }
     }
     return 1;

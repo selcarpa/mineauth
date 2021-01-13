@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.aethli.mineauth.common.utils.MessageUtils.*;
+import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class LoginHelpCommand extends BaseCommand {
   public static final String COMMAND = "loginHelp";

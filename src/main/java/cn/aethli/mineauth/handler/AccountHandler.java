@@ -5,7 +5,6 @@ import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.common.utils.MetadataUtils;
 import cn.aethli.mineauth.config.MineauthConfig;
-import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import cn.aethli.mineauth.entity.AuthPlayer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
@@ -30,6 +29,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +71,10 @@ public class AccountHandler {
 
   public static AuthPlayer getAuthPlayer(String key) {
     return AUTH_PLAYER_MAP.get(key);
+  }
+
+  public static PlayerPreparation getPlayerPreparation(String key) {
+    return PLAYER_PREPARATION_MAP.get(key);
   }
 
   private void handleLivingEvents(LivingEvent event) {
@@ -275,7 +279,8 @@ public class AccountHandler {
   }
 
   @SubscribeEvent
-  public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) {
+  public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) throws IOException {
     scheduler.shutdown();
+    ForgetPassword.closeRandomAccessFile();
   }
 }
