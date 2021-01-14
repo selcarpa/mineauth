@@ -8,9 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -76,6 +74,10 @@ public class LatchHandler {
   private static final Map<String, LatchPreparation> LATCH_PREPARATION_MAP =
       new ConcurrentHashMap<>();
 
+  public static LatchPreparation getLatchPreparation(String key) {
+    return LATCH_PREPARATION_MAP.get(key);
+  }
+
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
     final ItemStack itemStack = event.getItemStack();
@@ -86,20 +88,21 @@ public class LatchHandler {
       if (player.hasPermissionLevel(1)) {
         return;
       }
-      ResourceLocation tag = new ResourceLocation("owner", "mineauth");
-      final boolean contains = ItemTags.getCollection().get(tag).contains(item);
-      return;
-    }
-    ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
-    if (heldItem.isEmpty()) {
-      heldItem = player.getHeldItem(Hand.OFF_HAND);
-      if (heldItem.isEmpty()) {
-        return;
-      }
-    }
-    if (heldItem.getItem() instanceof BlockItem
-        && SIGN_BLOCKS.contains(((BlockItem) heldItem.getItem()).getBlock())) {
 
+      if (player.isSneaking()) {
+        ItemStack heldItem = player.getHeldItem(Hand.MAIN_HAND);
+        if (heldItem.isEmpty()) {
+          heldItem = player.getHeldItem(Hand.OFF_HAND);
+          if (heldItem.isEmpty()) {
+            return;
+          }
+        }
+        // player place a sign on chest
+        if (heldItem.getItem() instanceof BlockItem
+            && SIGN_BLOCKS.contains(((BlockItem) heldItem.getItem()).getBlock())) {}
+
+      } else { // player open a chest or something
+      }
     }
   }
 

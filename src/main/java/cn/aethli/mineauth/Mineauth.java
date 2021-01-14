@@ -3,6 +3,7 @@ package cn.aethli.mineauth;
 import cn.aethli.mineauth.config.MineauthConfig;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import cn.aethli.mineauth.handler.AccountHandler;
+import cn.aethli.mineauth.handler.LatchHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -34,6 +35,10 @@ public class Mineauth {
     if (MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get()) {
       final AccountHandler accountHandler = new AccountHandler();
       MinecraftForge.EVENT_BUS.register(accountHandler);
+    }
+    if (MineauthConfig.MINEAUTH_CONFIG.enableLatchModule.get()) {
+      final LatchHandler latchHandler = new LatchHandler();
+      MinecraftForge.EVENT_BUS.register(latchHandler);
     }
     MinecraftForge.EVENT_BUS.register(this);
 
