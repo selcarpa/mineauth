@@ -129,7 +129,7 @@ public class DataUtils {
       LogManager.getLogger().debug(FORGEMOD, createTableSql);
       connection.createStatement().executeUpdate(createTableSql);
     }
-    close(tableResultSet,null,connection);
+    close(tableResultSet, null, connection);
   }
 
   /**

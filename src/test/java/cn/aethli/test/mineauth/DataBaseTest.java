@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static cn.aethli.test.mineauth.utils.PrintUtils.jsonPrint;
+
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DataBaseTest {
@@ -41,7 +43,7 @@ public class DataBaseTest {
             "admin",
             2);
 //    ExpansionAbleConnectionPool.init(
-//        "org.h2.Driver",
+//        "org.mariadb.jdbc.Driver",
 //        "jdbc:mysql://127.0.0.1:3306/mineauth?useUnicode=true&allowPublicKeyRetrieval=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8",
 //        "root",
 //        "123456",
@@ -104,8 +106,7 @@ public class DataBaseTest {
     AuthPlayer authPlayer = new AuthPlayer();
     authPlayer.setId(id);
     AuthPlayer selectOne = DataUtils.selectOne(authPlayer);
-    Gson gson = new Gson();
-    System.out.println(gson.toJson(selectOne));
+    jsonPrint(selectOne);
   }
 
   @Test

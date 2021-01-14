@@ -15,9 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
@@ -27,6 +29,8 @@ public class ForgetPassword extends BaseCommand {
   private static final List<String> PARAMETERS = new ArrayList<>();
   private static final String PATH_FILE_NAME = "./mineauth/forget.txt";
   private static RandomAccessFile randomAccessFile = null;
+  private static final ZoneOffset ZONE_OFFSET = OffsetDateTime.now().getOffset();
+
 
   static {
   }
@@ -39,7 +43,7 @@ public class ForgetPassword extends BaseCommand {
     if (randomAccessFile == null) {
       try {
         File file = new File(PATH_FILE_NAME);
-        //create mineauth dir
+        // create mineauth dir
         if (!file.getParentFile().exists()) {
           file.getParentFile().mkdir();
         }
@@ -87,13 +91,14 @@ public class ForgetPassword extends BaseCommand {
         StringBuilder forgetContent = new StringBuilder();
         try {
           forgetContent
-              .append(UUID.randomUUID().toString())
-              .append("\n")
+              .append(LocalDateTime.now().toInstant(ZONE_OFFSET).toEpochMilli())
+              .append("|")
               .append(player.getUniqueID().toString())
-              .append("\t")
+              .append("|")
               .append(player.getScoreboardName())
-              .append("\t")
-              .append(authPlayer.getIdentifier());
+              .append("|")
+              .append(authPlayer.getIdentifier())
+              .append("|");
           randomAccessFile.seek(randomAccessFile.length());
           randomAccessFile.write(forgetContent.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {

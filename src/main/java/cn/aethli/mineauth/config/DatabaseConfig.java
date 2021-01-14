@@ -51,7 +51,7 @@ public class DatabaseConfig {
         builder
             .comment("JDBC driver to use")
             .define(
-                "driver(org.h2.Driver for h2 database,org.mariadb.jdbc.Driver for mysql/mariadb)",
+                "driver(\"org.h2.Driver\" for h2 database,\"org.mariadb.jdbc.Driver\" for mysql/mariadb)",
                 "org.h2.Driver");
 
     this.user = builder.comment("Database user").define("user", "root");
