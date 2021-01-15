@@ -116,10 +116,10 @@ public class AccountHandler {
                     new SDisconnectPacket(
                         new TranslationTextComponent(
                             I18nUtils.getTranslateContent("deny"),
-                            MineauthConfig.MINEAUTH_CONFIG.delay.get())));
+                            MineauthConfig.accountConfig.delay.get())));
           }
         },
-        MineauthConfig.MINEAUTH_CONFIG.delay.get(),
+        MineauthConfig.accountConfig.delay.get(),
         TimeUnit.SECONDS);
   }
 
@@ -260,11 +260,11 @@ public class AccountHandler {
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
     event.getDispatcher().register(new LoginCommand().getBuilder());
     allowCommands.add(LoginCommand.COMMAND);
-    if (MineauthConfig.MINEAUTH_CONFIG.enableRegister.get()) {
+    if (MineauthConfig.accountConfig.enableRegister.get()) {
       event.getDispatcher().register(new RegisterCommand().getBuilder());
       allowCommands.add(RegisterCommand.COMMAND);
     }
-    if (MineauthConfig.MINEAUTH_CONFIG.enableChangePassword.get()) {
+    if (MineauthConfig.accountConfig.enableChangePassword.get()) {
       event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
       allowCommands.add(ChangePasswordCommand.COMMAND);
     }

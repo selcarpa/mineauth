@@ -1,7 +1,5 @@
 package cn.aethli.mineauth.config;
 
-import cn.aethli.mineauth.command.account.ChangePasswordCommand;
-import cn.aethli.mineauth.command.account.RegisterCommand;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
@@ -27,9 +25,11 @@ public class MineauthConfig {
 
   public static final ForgeConfigSpec FORGE_CONFIG_SPEC;
   public static final MineauthConfig MINEAUTH_CONFIG;
-  public static DatabaseConfig databaseConfig;
   public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
-          "/assets/mineauth/initial/internalDatabase.mv.db";
+      "/assets/mineauth/initial/internalDatabase.mv.db";
+  public static DatabaseConfig databaseConfig;
+  public static AccountConfig accountConfig;
+  public static LatchConfig latchConfig;
 
   static {
     final Pair<MineauthConfig, ForgeConfigSpec> specPair =
@@ -40,11 +40,8 @@ public class MineauthConfig {
 
   public final ForgeConfigSpec.BooleanValue enableAccountModule;
   public final ForgeConfigSpec.BooleanValue enableLatchModule;
-  public final ForgeConfigSpec.BooleanValue enableRegister;
-  public final ForgeConfigSpec.BooleanValue enableChangePassword;
-  public final ForgeConfigSpec.IntValue delay;
-  public final ForgeConfigSpec.BooleanValue enableBanner;
   public final ForgeConfigSpec.ConfigValue<String> language;
+  public final ForgeConfigSpec.BooleanValue enableBanner;
 
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
     builder.comment("Server configuration settings").push("server");
@@ -57,31 +54,16 @@ public class MineauthConfig {
     this.enableLatchModule =
         builder.comment("Enable or disable latch module").define("enableLatchModule", true);
 
-    this.enableBanner =
-        builder.comment("Enable or disable banner on console").define("enableBanner", false);
-
-    this.enableRegister =
-        builder
-            .comment("Enable or disable the /" + RegisterCommand.COMMAND + " command.")
-            .define("enableRegister", true);
-
-    this.enableChangePassword =
-        builder
-            .comment("Enable or disable the /" + ChangePasswordCommand.COMMAND + " command.")
-            .define("enableChangePassword", true);
-
-    this.delay =
-        builder
-            .comment(
-                "delay in seconds a player can authenticate before being automatically kicked from the server.")
-            .defineInRange("delay", 60, 30, 600);
-
     this.language =
         builder.comment("language for message(en-US,zh-CN)").define("language", "en-US");
+    this.enableBanner =
+        builder.comment("Enable or disable banner on console").define("enableBanner", false);
 
     builder.pop();
 
     databaseConfig = new DatabaseConfig(builder);
+    accountConfig = new AccountConfig(builder);
+    latchConfig = new LatchConfig(builder);
   }
 
   /** to reset connection pool */
@@ -89,11 +71,11 @@ public class MineauthConfig {
     if (MINEAUTH_CONFIG.enableAccountModule.get()) {
       initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
       ExpansionAbleConnectionPool.init(
-              databaseConfig.driver.get(),
-              databaseConfig.url.get(),
-              databaseConfig.user.get(),
-              databaseConfig.password.get(),
-              databaseConfig.poolSize.get());
+          databaseConfig.driver.get(),
+          databaseConfig.url.get(),
+          databaseConfig.user.get(),
+          databaseConfig.password.get(),
+          databaseConfig.poolSize.get());
       DataUtils.databaseInit();
       I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
     }
