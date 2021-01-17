@@ -15,7 +15,7 @@ description = "just auth"
 [[dependencies.mineauth]]
 modId = "forge"
 mandatory = true
-versionRange = "[35,)"
+versionRange = "[32,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.mineauth]]
