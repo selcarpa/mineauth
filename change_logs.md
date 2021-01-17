@@ -1,10 +1,41 @@
+# 0.3.0
+
+### Fixed
+
+1. Some datasource hot-modify error
+2. First-startup error
+3. Player(unauthorised) cannot been kicked out correctly sometimes
+
+### New feature
+
+1. ForgetPassword command
+2. Add more i18n customization options(You can put your own i18n file into $MINECRAFT_SERVER_PATH/mineauth/i18n/ ,
+   Rename it to xxx.json[File example](src/main/resources/assets/mineauth/json/i18n), And edit
+   $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml.)
+
+### Knew issues
+
+1. I18n customization cannot hot-modify
+
+### Attention:
+
+1. internal database file is fully compatible, you can keep mineauth/ folder
+2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, you should backup and re-build it
+
 # 0.2.0
+
 1. Refactor code(ready for chest lock module)
-2. Fix username field cannot been saved
+2. Fixed a bug that cause username field cannot been saved
 3. Disable banner print of default config
 4. Add i18n support(has not test)
 5. Build a mysql-support jar file
 6. Add identifierSet command(but forgetPassword not completely)
+
+### Knew issues
+
+1. First start will fail, it won't happen in second startup.
+
 ### Attention:
+
 1. internal database file is fully compatible, you can keep mineauth/ folder
 2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, you should backup and re-build it

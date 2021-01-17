@@ -18,7 +18,7 @@ public class DatabaseConfig {
   public final ForgeConfigSpec.IntValue poolSize;
 
   public DatabaseConfig(ForgeConfigSpec.Builder builder) {
-    builder.comment("database configuration setting").push("database");
+    builder.comment("database configuration").push("database");
     this.columnIdentifier =
         builder.comment("Column for the identifier").define("columnIdentifier", "EMAIL");
 
@@ -49,10 +49,9 @@ public class DatabaseConfig {
 
     this.driver =
         builder
-            .comment("JDBC driver to use")
-            .define(
-                "driver(\"org.h2.Driver\" for h2 database,\"org.mariadb.jdbc.Driver\" for mysql/mariadb)",
-                "org.h2.Driver");
+            .comment(
+                "JDBC driver to use(\"org.h2.Driver\" for h2 database,\"org.mariadb.jdbc.Driver\" for mysql/mariadb)")
+            .define("driver", "org.h2.Driver");
 
     this.user = builder.comment("Database user").define("user", "root");
 
@@ -60,10 +59,7 @@ public class DatabaseConfig {
 
     this.table = builder.comment("Table to be used").define("table", "PLAYERS");
 
-    this.poolSize =
-        builder
-            .comment("PoolSize to be used")
-            .defineInRange("poolSize", 2, 1, 10);
+    this.poolSize = builder.comment("PoolSize to be used").defineInRange("poolSize", 2, 1, 10);
 
     builder.pop();
   }

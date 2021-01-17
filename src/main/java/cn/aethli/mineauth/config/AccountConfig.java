@@ -12,7 +12,7 @@ public class AccountConfig {
   public final ForgeConfigSpec.ConfigValue<String> defaultPassword;
 
   public AccountConfig(ForgeConfigSpec.Builder builder) {
-    builder.comment("database configuration setting").push("database");
+    builder.comment("account module configuration").push("account");
     this.enableRegister =
         builder
             .comment("Enable or disable the /" + RegisterCommand.COMMAND + " command.")

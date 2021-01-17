@@ -18,5 +18,5 @@
   "identifier_not_login_yet": "尚未登录, 无法设置身份验证",
   "identifier_set_success": "身份验证设置成功! ",
   "forget_password_has_login_yet": "您已经登录, 无法使用此命令",
-  "permission_deny": ""
+  "permission_deny": "权限不足"
 }

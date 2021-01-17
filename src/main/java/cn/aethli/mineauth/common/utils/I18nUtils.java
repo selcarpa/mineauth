@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -24,8 +26,9 @@ public class I18nUtils {
         LANGUAGE_MAP.putAll(
             gson.fromJson(new InputStreamReader(inputstream, StandardCharsets.UTF_8), Map.class));
       } else {
-        path = "./mineauth/i18n/" + language.trim() + ".json";
-        try (InputStream extraInputStream = I18nUtils.class.getResourceAsStream(path)) {
+        path = "mineauth/i18n/" + language.trim() + ".json";
+        File file = new File(path);
+        try (InputStream extraInputStream = new FileInputStream(file)) {
           LANGUAGE_MAP.putAll(
               gson.fromJson(
                   new InputStreamReader(extraInputStream, StandardCharsets.UTF_8), Map.class));

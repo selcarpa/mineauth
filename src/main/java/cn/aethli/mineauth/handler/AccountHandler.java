@@ -10,7 +10,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SDisconnectPacket;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.CommandEvent;
@@ -29,21 +28,21 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class AccountHandler {
   private static final List<String> allowCommands = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger();
-  private static final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
+  private static final ScheduledExecutorService scheduler =
+      new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory());
   private static final Map<String, AuthPlayer> AUTH_PLAYER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
@@ -56,7 +55,7 @@ public class AccountHandler {
    * auth player
    *
    * @param key player unique id
-   * @param authPlayer @see cn.aethli.mineauth.entity.AuthPlayer
+   * @param authPlayer mineauth player entity {@link cn.aethli.mineauth.entity.AuthPlayer}
    */
   public static void addToAuthPlayerMap(String key, AuthPlayer authPlayer) {
     AUTH_PLAYER_MAP.put(key, authPlayer);
@@ -111,12 +110,15 @@ public class AccountHandler {
           if (PLAYER_PREPARATION_MAP.containsKey(playerId)) {
             PLAYER_PREPARATION_MAP.remove(playerId);
             AUTH_PLAYER_MAP.remove(playerId);
-            ((ServerPlayerEntity) event.getPlayer())
-                .connection.sendPacket(
-                    new SDisconnectPacket(
-                        new TranslationTextComponent(
-                            I18nUtils.getTranslateContent("deny"),
-                            MineauthConfig.accountConfig.delay.get())));
+            try {
+              ((ServerPlayerEntity) player)
+                  .connection.disconnect(
+                      new TranslationTextComponent(
+                          I18nUtils.getTranslateContent("deny"),
+                          MineauthConfig.accountConfig.delay.get()));
+            } catch (Exception e) {
+              LOGGER.error(e.getMessage(), e);
+            }
           }
         },
         MineauthConfig.accountConfig.delay.get(),
@@ -198,6 +200,16 @@ public class AccountHandler {
                 vector3d.getZ(),
                 playerPreparation.getRotationYaw(),
                 playerPreparation.getRotationPitch());
+      }else{
+        try {
+          ((ServerPlayerEntity) player)
+              .connection.disconnect(
+                  new TranslationTextComponent(
+                      I18nUtils.getTranslateContent("deny"),
+                      MineauthConfig.accountConfig.delay.get()));
+        } catch (Exception e) {
+          LOGGER.error(e.getMessage(), e);
+        }
       }
     }
   }
@@ -272,8 +284,8 @@ public class AccountHandler {
     allowCommands.add(RegisterHelpCommand.COMMAND);
     event.getDispatcher().register(new LoginHelpCommand().getBuilder());
     allowCommands.add(LoginHelpCommand.COMMAND);
-    event.getDispatcher().register(new ForgetPassword().getBuilder());
-    allowCommands.add(ForgetPassword.COMMAND);
+    event.getDispatcher().register(new ForgetPasswordCommand().getBuilder());
+    allowCommands.add(ForgetPasswordCommand.COMMAND);
     event.getDispatcher().register(new IdentifierSetCommand().getBuilder());
     allowCommands.add(IdentifierSetCommand.COMMAND);
   }
@@ -281,6 +293,35 @@ public class AccountHandler {
   @SubscribeEvent
   public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) throws IOException {
     scheduler.shutdown();
-    ForgetPassword.closeRandomAccessFile();
+    ForgetPasswordCommand.closeRandomAccessFile();
+  }
+
+  static class DaemonThreadFactory implements ThreadFactory {
+
+    private static final AtomicInteger poolNumber = new AtomicInteger(1);
+    private final ThreadGroup group;
+    private final AtomicInteger threadNumber = new AtomicInteger(1);
+    private final String namePrefix;
+
+    DaemonThreadFactory() {
+      SecurityManager securityManager = System.getSecurityManager();
+      group =
+          (securityManager != null)
+              ? securityManager.getThreadGroup()
+              : Thread.currentThread().getThreadGroup();
+      namePrefix = "ScheduledPool-" + poolNumber.getAndIncrement() + "-thread-";
+    }
+
+    /** @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable) */
+    @Override
+    public Thread newThread(@Nonnull Runnable r) {
+      Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
+      t.setDaemon(true);
+      if (t.getPriority() != Thread.NORM_PRIORITY) {
+        t.setPriority(Thread.NORM_PRIORITY);
+      }
+
+      return t;
+    }
   }
 }

@@ -4,7 +4,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class LatchConfig {
     public LatchConfig(ForgeConfigSpec.Builder builder) {
-        builder.comment("database configuration setting").push("database");
+        builder.comment("latch module configuration").push("latch");
         builder.pop();
     }
 }

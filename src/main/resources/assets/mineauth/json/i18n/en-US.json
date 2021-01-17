@@ -18,5 +18,5 @@
   "identifier_not_login_yet": "You have not login yet, Could not set identifier",
   "identifier_set_success": "identifier set success! ",
   "forget_password_has_login_yet": "You have login yet! Could not use this command",
-  "permission_deny": ""
+  "permission_deny": "permission deny"
 }

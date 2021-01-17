@@ -20,22 +20,22 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
-public class ForgetPassword extends BaseCommand {
+public class ForgetPasswordCommand extends BaseCommand {
   public static final String COMMAND = "forgetPassword";
   private static final Logger LOGGER = LogManager.getLogger();
   private static final List<String> PARAMETERS = new ArrayList<>();
   private static final String PATH_FILE_NAME = "./mineauth/forget.txt";
-  private static RandomAccessFile randomAccessFile = null;
   private static final ZoneOffset ZONE_OFFSET = OffsetDateTime.now().getOffset();
-
+  private static RandomAccessFile randomAccessFile = null;
 
   static {
   }
 
-  public ForgetPassword() {
+  public ForgetPasswordCommand() {
     super(COMMAND, PARAMETERS);
   }
 
@@ -97,8 +97,8 @@ public class ForgetPassword extends BaseCommand {
               .append("|")
               .append(player.getScoreboardName())
               .append("|")
-              .append(authPlayer.getIdentifier())
-              .append("|");
+              .append(Optional.ofNullable(authPlayer.getIdentifier()).orElse("-"))
+              .append("|\n");
           randomAccessFile.seek(randomAccessFile.length());
           randomAccessFile.write(forgetContent.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {

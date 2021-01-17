@@ -44,7 +44,7 @@ public class MineauthConfig {
   public final ForgeConfigSpec.BooleanValue enableBanner;
 
   public MineauthConfig(final ForgeConfigSpec.Builder builder) {
-    builder.comment("Server configuration settings").push("server");
+    builder.comment("Server configuration").push("server");
 
     this.enableAccountModule =
         builder
@@ -52,7 +52,7 @@ public class MineauthConfig {
             .define("enableAccountModule", true);
 
     this.enableLatchModule =
-        builder.comment("Enable or disable latch module").define("enableLatchModule", true);
+        builder.comment("Enable or disable latch module").define("enableLatchModule", false);
 
     this.language =
         builder.comment("language for message(en-US,zh-CN)").define("language", "en-US");
