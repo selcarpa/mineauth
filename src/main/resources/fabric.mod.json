@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "mineauth",
+  "version": "${version}",
+  "name": "mineauth",
+  "description": "just auth",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Aethli/mineauth",
+    "sources": "https://github.com/Aethli/mineauth"
+  },
+  "license": "GNU LESSER GENERAL PUBLIC LICENSE",
+  "icon": "assets/modid/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "cn.aethli.mineauth.Mineauth"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
