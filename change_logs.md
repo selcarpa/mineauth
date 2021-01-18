@@ -21,7 +21,8 @@
 ### Attention:
 
 1. internal database file is fully compatible, you can keep mineauth/ folder
-2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, you should backup and re-build it
+2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, In case of modified it, you should backup
+   and re-edit it
 
 # 0.2.0
 
@@ -39,4 +40,9 @@
 ### Attention:
 
 1. internal database file is fully compatible, you can keep mineauth/ folder
-2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, you should backup and re-build it
+2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, In case of modified it, you should backup
+   and re-edit it
+
+# 0.1.0
+
+1. It works
