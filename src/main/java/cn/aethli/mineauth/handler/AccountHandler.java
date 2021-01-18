@@ -41,8 +41,8 @@ import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 public class AccountHandler {
   private static final List<String> allowCommands = new ArrayList<>();
   private static final Logger LOGGER = LogManager.getLogger();
-  private static final ScheduledExecutorService scheduler =
-      new ScheduledThreadPoolExecutor(1, new DaemonThreadFactory());
+  private static final ScheduledExecutorService kickOutScheduler =
+      new ScheduledThreadPoolExecutor(1, new KickOutThreadFactory());
   private static final Map<String, AuthPlayer> AUTH_PLAYER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
@@ -105,22 +105,8 @@ public class AccountHandler {
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
     msgToOnePlayerByI18n(player, "welcome");
-    scheduler.schedule(
-        () -> {
-          if (PLAYER_PREPARATION_MAP.containsKey(playerId)) {
-            PLAYER_PREPARATION_MAP.remove(playerId);
-            AUTH_PLAYER_MAP.remove(playerId);
-            try {
-              ((ServerPlayerEntity) player)
-                  .connection.disconnect(
-                      new TranslationTextComponent(
-                          I18nUtils.getTranslateContent("deny"),
-                          MineauthConfig.accountConfig.delay.get()));
-            } catch (Exception e) {
-              LOGGER.error(e.getMessage(), e);
-            }
-          }
-        },
+    kickOutScheduler.schedule(
+        new KickOutTask((ServerPlayerEntity) player),
         MineauthConfig.accountConfig.delay.get(),
         TimeUnit.SECONDS);
   }
@@ -200,7 +186,7 @@ public class AccountHandler {
                 vector3d.getZ(),
                 playerPreparation.getRotationYaw(),
                 playerPreparation.getRotationPitch());
-      }else{
+      } else {
         try {
           ((ServerPlayerEntity) player)
               .connection.disconnect(
@@ -292,36 +278,68 @@ public class AccountHandler {
 
   @SubscribeEvent
   public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) throws IOException {
-    scheduler.shutdown();
+    kickOutScheduler.shutdown();
     ForgetPasswordCommand.closeRandomAccessFile();
   }
 
-  static class DaemonThreadFactory implements ThreadFactory {
+  private static class KickOutThreadFactory implements ThreadFactory {
 
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
     private final ThreadGroup group;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
 
-    DaemonThreadFactory() {
+    KickOutThreadFactory() {
       SecurityManager securityManager = System.getSecurityManager();
       group =
           (securityManager != null)
               ? securityManager.getThreadGroup()
               : Thread.currentThread().getThreadGroup();
-      namePrefix = "ScheduledPool-" + poolNumber.getAndIncrement() + "-thread-";
+      namePrefix = "KickOutScheduledPool-" + poolNumber.getAndIncrement() + "-thread-";
     }
 
     /** @see java.util.concurrent.ThreadFactory#newThread(java.lang.Runnable) */
     @Override
-    public Thread newThread(@Nonnull Runnable r) {
-      Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
-      t.setDaemon(true);
-      if (t.getPriority() != Thread.NORM_PRIORITY) {
-        t.setPriority(Thread.NORM_PRIORITY);
-      }
+    public Thread newThread(@Nonnull Runnable runnable) {
+      Thread thread = new Thread(group, runnable, namePrefix + threadNumber.getAndIncrement(), 0);
+      thread.setDaemon(true);
+      thread.setPriority(Thread.MIN_PRIORITY);
+      thread.setUncaughtExceptionHandler(new KickOutExceptionHandler());
 
-      return t;
+      return thread;
+    }
+  }
+
+  private static class KickOutExceptionHandler implements Thread.UncaughtExceptionHandler {
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+      LOGGER.error(t.getName() + ":\n" + e.getMessage());
+      LOGGER.error(e.getMessage(), e);
+    }
+  }
+
+  private static class KickOutTask implements Runnable {
+
+    private final ServerPlayerEntity player;
+
+    public KickOutTask(ServerPlayerEntity player) {
+      this.player = player;
+    }
+
+    @Override
+    public void run() {
+      try {
+        final String playerId = player.getUniqueID().toString();
+        if (PLAYER_PREPARATION_MAP.containsKey(playerId)) {
+          PLAYER_PREPARATION_MAP.remove(playerId);
+          AUTH_PLAYER_MAP.remove(playerId);
+          player.connection.disconnect(
+              new TranslationTextComponent(
+                  I18nUtils.getTranslateContent("deny"), MineauthConfig.accountConfig.delay.get()));
+        }
+      } catch (Exception e) {
+        LOGGER.error(e.getMessage(), e);
+      }
     }
   }
 }

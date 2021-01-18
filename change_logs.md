@@ -5,6 +5,7 @@
 1. Some datasource hot-modify error
 2. First-startup error
 3. Player(unauthorised) cannot been kicked out correctly sometimes
+4. Version range error that caused mineauth cannot run on 1.16.1 correctly
 
 ### New feature
 
