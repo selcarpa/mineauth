@@ -37,6 +37,12 @@ public class IdentifierSetCommand extends BaseCommand {
     if (authPlayer == null) {
       msgToOnePlayerByI18n(player, "identifier_not_login_yet", player.getScoreboardName());
     } else {
+      //todo avoid select
+      authPlayer.setUuid(player.getUniqueID().toString());
+      authPlayer = DataUtils.selectOne(authPlayer);
+      if (authPlayer == null) {
+        return 0;
+      }
       String identifier = StringArgumentType.getString(context, "identifier");
       authPlayer.setIdentifier(identifier);
       DataUtils.updateById(authPlayer);

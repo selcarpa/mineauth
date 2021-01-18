@@ -228,6 +228,7 @@ public class DataUtils {
       throw new DataRuntimeException("no id found in parameter entity");
     }
     // avoid to build sql within 'id=xxxx'
+    //todo new entity by copy properties
     entity.setId(null);
     String updateStatement = buildAssignmentStatement(entity);
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();

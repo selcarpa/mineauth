@@ -14,10 +14,6 @@
    Rename it to xxx.json[File example](src/main/resources/assets/mineauth/json/i18n), And edit
    $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml.)
 
-### Knew issues
-
-1. I18n customization cannot hot-modify
-
 ### Attention:
 
 1. internal database file is fully compatible, you can keep mineauth/ folder

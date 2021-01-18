@@ -102,7 +102,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.1-32.0.108'
     provided "com.h2database:h2:1.4.200"
-//    provided group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.1'
+    provided group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.1'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0'
