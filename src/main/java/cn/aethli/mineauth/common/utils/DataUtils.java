@@ -217,8 +217,7 @@ public class DataUtils {
       throw new DataRuntimeException("no id found in parameter entity");
     }
     // avoid to build sql within 'id=xxxx'
-    // todo new entity by copy properties
-    entity = copyEntity(entity.getClass(), entity);
+    entity = copyEntity(entity);
     entity.setId(null);
     String updateStatement = buildAssignmentStatement(entity);
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
@@ -384,14 +383,14 @@ public class DataUtils {
     return null;
   }
 
-  public static <T extends BaseEntity> T copyEntity(Class<T> tClass, T src) {
+  private static <T extends BaseEntity> T copyEntity(T src) {
     final EntityMapper entityMapperByTypeName =
         MetadataUtils.getEntityMapperByTypeName(src.getClass().getTypeName());
     if (entityMapperByTypeName == null || entityMapperByTypeName.getFields() == null) {
       return null;
     }
     try {
-      final T t = tClass.newInstance();
+      final BaseEntity t = src.getClass().newInstance();
       entityMapperByTypeName
           .getFields()
           .forEach(
@@ -404,7 +403,7 @@ public class DataUtils {
                   e.printStackTrace();
                 }
               });
-      return t;
+      return (T) t;
     } catch (InstantiationException | IllegalAccessException e) {
       e.printStackTrace();
     }
