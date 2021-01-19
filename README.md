@@ -2,7 +2,7 @@
 
 ![Java CI with Gradle](https://github.com/AethLi/mineauth/workflows/Java%20CI%20with%20Gradle/badge.svg)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
-[![change logs](https://img.shields.io/badge/change%20logs-0.2.0-yellow)](change_logs.md)
+[![change logs](https://img.shields.io/badge/change%20logs-0.3.0-yellow)](change_logs.md)
 
 ## Feature
 1. Server-level authentication for both online-mode true/false;
