@@ -113,18 +113,7 @@ public class DataUtils {
                         return rowSqlBuilder.toString();
                       })
                   .collect(Collectors.joining(","))
-              + ");"
-          /* + playerTableColumn.stream()
-          .map(
-              tableColumn ->
-                  "comment on column "
-                      + playerEntityMapper.getTableName()
-                      + "."
-                      + tableColumn.getColumnName()
-                      + " IS '"
-                      + tableColumn.getAlias()
-                      + "'")
-          .collect(Collectors.joining(";"))*/ ;
+              + ");";
       LogManager.getLogger().debug(FORGEMOD, "createTableSql:");
       LogManager.getLogger().debug(FORGEMOD, createTableSql);
       connection.createStatement().executeUpdate(createTableSql);
@@ -228,7 +217,8 @@ public class DataUtils {
       throw new DataRuntimeException("no id found in parameter entity");
     }
     // avoid to build sql within 'id=xxxx'
-    //todo new entity by copy properties
+    // todo new entity by copy properties
+    entity = copyEntity(entity.getClass(), entity);
     entity.setId(null);
     String updateStatement = buildAssignmentStatement(entity);
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
@@ -390,6 +380,33 @@ public class DataUtils {
     } catch (InstantiationException | IllegalAccessException e) {
       LOGGER.error(e.getMessage());
       LOGGER.debug(e.getMessage(), e);
+    }
+    return null;
+  }
+
+  public static <T extends BaseEntity> T copyEntity(Class<T> tClass, T src) {
+    final EntityMapper entityMapperByTypeName =
+        MetadataUtils.getEntityMapperByTypeName(src.getClass().getTypeName());
+    if (entityMapperByTypeName == null || entityMapperByTypeName.getFields() == null) {
+      return null;
+    }
+    try {
+      final T t = tClass.newInstance();
+      entityMapperByTypeName
+          .getFields()
+          .forEach(
+              field -> {
+                try {
+                  if (field.get(src) != null) {
+                    field.set(t, field.get(src));
+                  }
+                } catch (IllegalAccessException e) {
+                  e.printStackTrace();
+                }
+              });
+      return t;
+    } catch (InstantiationException | IllegalAccessException e) {
+      e.printStackTrace();
     }
     return null;
   }

@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
-public class ForgetPasswordCommand extends BaseCommand {
+public class  ForgetPasswordCommand extends BaseCommand {
   public static final String COMMAND = "forgetPassword";
   private static final Logger LOGGER = LogManager.getLogger();
   private static final List<String> PARAMETERS = new ArrayList<>();

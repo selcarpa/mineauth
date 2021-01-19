@@ -50,10 +50,6 @@ public class LoginCommand extends BaseCommand {
         AccountHandler.addToAuthPlayerMap(player.getUniqueID().toString(), authPlayer);
         msgToOnePlayerByI18n(player, "login_success");
         // add userName to database
-        authPlayer.setPassword(null);
-        authPlayer.setIdentifier(null);
-        authPlayer.setUuid(null);
-        authPlayer.setBanned(null);
         authPlayer.setUsername(player.getScoreboardName());
         authPlayer.setLastLogin(LocalDateTime.now());
         DataUtils.updateById(authPlayer);
