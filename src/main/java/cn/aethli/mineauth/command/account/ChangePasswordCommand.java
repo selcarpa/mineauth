@@ -16,8 +16,8 @@ import java.util.List;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
 public class ChangePasswordCommand extends BaseCommand {
-  private static final List<String> PARAMETERS = new ArrayList<>();
   public static final String COMMAND = "changePassword";
+  private static final List<String> PARAMETERS = new ArrayList<>();
 
   static {
     PARAMETERS.add("oldPassword");
@@ -47,12 +47,13 @@ public class ChangePasswordCommand extends BaseCommand {
       authPlayer.setPassword(digestedPassword);
       authPlayer = DataUtils.selectOne(authPlayer);
       if (authPlayer == null) {
-        msgToOnePlayerByI18n(player,"change_password_wrong_password");
+        msgToOnePlayerByI18n(player, "change_password_wrong_password");
         return 0;
       }
       digestedPassword = DigestUtils.md5Hex(newPassword);
       authPlayer.setPassword(digestedPassword);
       DataUtils.updateById(authPlayer);
+      msgToOnePlayerByI18n(player, "change_password_success");
       return 1;
     }
   }
