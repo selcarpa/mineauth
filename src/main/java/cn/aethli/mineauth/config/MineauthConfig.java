@@ -12,6 +12,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 @Mod.EventBusSubscriber(modid = "mineauth", bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MineauthConfig {
 
+  private static final Logger LOGGER = LogManager.getLogger();
   public static final ForgeConfigSpec FORGE_CONFIG_SPEC;
   public static final MineauthConfig MINEAUTH_CONFIG;
   public static final String DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH =
@@ -70,7 +72,26 @@ public class MineauthConfig {
   }
 
   /** to reset connection pool */
-  private synchronized static void afterLoadedConfig() throws SQLException, IOException {
+  private static synchronized void afterLoadedConfig() throws SQLException, IOException {
+    I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
+    boolean enableLatchModuleFlag =
+            BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableLatchModule.get());
+    if (enableLatchModuleFlag) {
+      LOGGER.debug("enableLatchModuleFlag true");
+      MinecraftForge.EVENT_BUS.register(Mineauth.LATCH_HANDLER);
+    }else {
+      LOGGER.debug("enableLatchModuleFlag false");
+      MinecraftForge.EVENT_BUS.unregister(Mineauth.LATCH_HANDLER);
+    }
+    boolean enableAccountModuleFlag =
+            BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get());
+    if (enableAccountModuleFlag) {
+      LOGGER.debug("enableAccountModuleFlag true");
+      MinecraftForge.EVENT_BUS.register(Mineauth.ACCOUNT_HANDLER);
+    }else {
+      LOGGER.debug("enableAccountModuleFlag false");
+      MinecraftForge.EVENT_BUS.unregister(Mineauth.ACCOUNT_HANDLER);
+    }
     if (MINEAUTH_CONFIG.enableAccountModule.get()) {
       initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
       ExpansionAbleConnectionPool.init(
@@ -80,21 +101,6 @@ public class MineauthConfig {
           databaseConfig.password.get(),
           databaseConfig.poolSize.get());
       DataUtils.databaseInit();
-      I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
-      boolean enableLatchModuleFlag =
-          BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableLatchModule.get());
-      if (enableLatchModuleFlag) {
-        MinecraftForge.EVENT_BUS.register(Mineauth.LATCH_HANDLER);
-      }else {
-        MinecraftForge.EVENT_BUS.unregister(Mineauth.LATCH_HANDLER);
-      }
-      boolean enableAccountModuleFlag =
-          BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get());
-      if (enableAccountModuleFlag) {
-        MinecraftForge.EVENT_BUS.register(Mineauth.ACCOUNT_HANDLER);
-      }else {
-        MinecraftForge.EVENT_BUS.unregister(Mineauth.ACCOUNT_HANDLER);
-      }
     }
   }
 

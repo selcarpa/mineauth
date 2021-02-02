@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatterBuilder;
 /** @author SelcaNyan */
 public class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
-  private static final String FORMAT = "yyyy-MM-dd HH:mm:ss";
-  // ignore milliseconds
   private static final DateTimeFormatter DATE_TIME_FORMATTER =  new DateTimeFormatterBuilder()
           .parseCaseInsensitive()
           .append(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -18,7 +16,6 @@ public class LocalDateTimeConverter implements Converter<LocalDateTime> {
 
   @Override
   public LocalDateTime valueOf(String src) {
-    //    return LocalDateTime.parse(src.substring(0, FORMAT.length()), DATE_TIME_FORMATTER);
     return LocalDateTime.parse(src, DATE_TIME_FORMATTER);
   }
 
