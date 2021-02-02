@@ -231,7 +231,21 @@ public class DataUtils {
       }
       String tableName = entityMapper.getTableName();
 
-      String sql = "update `" + tableName + "` " + updateStatement;
+      TableColumn idColumn =
+          entityMapper.getTableColumns().stream()
+              .filter(a -> a.getAlias().equals("id"))
+              .findFirst()
+              .get();
+      String sql =
+          "update `"
+              + tableName
+              + "` "
+              + updateStatement
+              + " WHERE `"
+              + idColumn.getColumnName()
+              + "`='"
+              + id
+              + "'";
       connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();

@@ -1,12 +1,15 @@
 package cn.aethli.mineauth.config;
 
+import cn.aethli.mineauth.Mineauth;
 import cn.aethli.mineauth.common.utils.DataUtils;
 import cn.aethli.mineauth.common.utils.I18nUtils;
 import cn.aethli.mineauth.datasource.ExpansionAbleConnectionPool;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 
@@ -67,7 +70,7 @@ public class MineauthConfig {
   }
 
   /** to reset connection pool */
-  private static void afterLoadedConfig() throws SQLException, ClassNotFoundException, IOException {
+  private synchronized static void afterLoadedConfig() throws SQLException, IOException {
     if (MINEAUTH_CONFIG.enableAccountModule.get()) {
       initialInternalDatabase(DEFAULT_H2_DATABASE_FILE_RESOURCE_PATH);
       ExpansionAbleConnectionPool.init(
@@ -78,23 +81,37 @@ public class MineauthConfig {
           databaseConfig.poolSize.get());
       DataUtils.databaseInit();
       I18nUtils.loadLangFile(MINEAUTH_CONFIG.language.get());
+      boolean enableLatchModuleFlag =
+          BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableLatchModule.get());
+      if (enableLatchModuleFlag) {
+        MinecraftForge.EVENT_BUS.register(Mineauth.LATCH_HANDLER);
+      }else {
+        MinecraftForge.EVENT_BUS.unregister(Mineauth.LATCH_HANDLER);
+      }
+      boolean enableAccountModuleFlag =
+          BooleanUtils.toBoolean(MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get());
+      if (enableAccountModuleFlag) {
+        MinecraftForge.EVENT_BUS.register(Mineauth.ACCOUNT_HANDLER);
+      }else {
+        MinecraftForge.EVENT_BUS.unregister(Mineauth.ACCOUNT_HANDLER);
+      }
     }
   }
 
   @SubscribeEvent
-  public static void onLoad(final ModConfig.Loading configEvent)
-      throws SQLException, ClassNotFoundException, IOException {
-    if (configEvent.getConfig().getFileName().contains("mineauth")) {
-      LogManager.getLogger().debug(FORGEMOD, "Loaded mineauth config file");
+  public static void onLoading(final ModConfig.Loading loading)
+      throws SQLException, IOException {
+    if (loading.getConfig().getFileName().contains("mineauth")) {
+      LogManager.getLogger().debug(FORGEMOD, "Mineauth config just got loaded");
       afterLoadedConfig();
     }
   }
 
   @SubscribeEvent
-  public static void onFileChange(final ModConfig.Reloading configEvent)
-      throws SQLException, ClassNotFoundException, IOException {
-    if (configEvent.getConfig().getFileName().contains("mineauth")) {
-      LogManager.getLogger().debug(FORGEMOD, "Forge config just got changed on the file system!");
+  public static void onReloading(final ModConfig.Reloading reloading)
+      throws SQLException, IOException {
+    if (reloading.getConfig().getFileName().contains("mineauth")) {
+      LogManager.getLogger().debug(FORGEMOD, "Mineauth config just got changed!");
       afterLoadedConfig();
     }
   }

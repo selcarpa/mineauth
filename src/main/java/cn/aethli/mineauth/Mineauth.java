@@ -24,29 +24,23 @@ import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 @Mod("mineauth")
 public class Mineauth {
   private static final Logger LOGGER = LogManager.getLogger();
+  public static final AccountHandler ACCOUNT_HANDLER = new AccountHandler();
+  public static final LatchHandler LATCH_HANDLER = new LatchHandler();
 
   /**
    * register this mod and initial some database entity metadata
    *
-   * @throws IOException when some jdk internal class exception
    */
-  public Mineauth() throws IOException {
+  public Mineauth() {
     ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, MineauthConfig.FORGE_CONFIG_SPEC);
-    if (MineauthConfig.MINEAUTH_CONFIG.enableAccountModule.get()) {
-      final AccountHandler accountHandler = new AccountHandler();
-      MinecraftForge.EVENT_BUS.register(accountHandler);
-    }
-    if (MineauthConfig.MINEAUTH_CONFIG.enableLatchModule.get()) {
-      final LatchHandler latchHandler = new LatchHandler();
-      MinecraftForge.EVENT_BUS.register(latchHandler);
-    }
+    MinecraftForge.EVENT_BUS.register(ACCOUNT_HANDLER);
+    MinecraftForge.EVENT_BUS.register(LATCH_HANDLER);
     MinecraftForge.EVENT_BUS.register(this);
-
   }
 
   @SubscribeEvent
   public void onFMLServerStartingEvent(FMLServerStartingEvent event) {
-    LOGGER.info("All Mineauth module online!");
+    LOGGER.info("Mineauth loaded!");
     //disable banner of default config
     if (MineauthConfig.MINEAUTH_CONFIG.enableBanner.get()) {
       String path = "/assets/mineauth/Banner.txt";

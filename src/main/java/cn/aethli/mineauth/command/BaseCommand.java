@@ -13,8 +13,12 @@ public abstract class BaseCommand implements Command<CommandSource> {
   protected LiteralArgumentBuilder<CommandSource> builder;
 
   protected BaseCommand(String command, List<String> parameters) {
-    this.builder = Commands.literal(command);
+    this(command, parameters, 0);
+  }
 
+  protected BaseCommand(String command, List<String> parameters, int permissionLevel) {
+    this.builder = Commands.literal(command);
+    builder.requires(commandSource -> commandSource.hasPermissionLevel(permissionLevel));
     if (null != parameters && !parameters.isEmpty()) {
       builder.then(getArgument(parameters));
     } else {

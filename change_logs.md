@@ -1,3 +1,14 @@
+# 0.3.1
+
+### Fixed
+
+1. Update sql wrong(Caused some serious errors)
+2. "enableAccountModule=false" does not take effect correctly
+
+### Attention:
+
+1. This version is a bug fix version and does not contain functional updates.
+
 # 0.3.0
 
 ### Fixed

@@ -10,9 +10,10 @@
 
 ### Installation
 
-1. Stop your server.
-2. Download jar file, put into $MINECRAFT_SERVER_PATH/mods/.
-3. Restart server.
+1. Stop your server;
+2. Download jar file, put into $MINECRAFT_SERVER_PATH/mods/ ;
+3. Edit server.properties, set allow-flight=true;
+4. Restart server.
 
 ## Client side
 
@@ -21,7 +22,7 @@
 1. Minecraft [1.16.1,)
 2. Forge [32,)
 3. Java8
-4. Do not put mineauth.*.jar into mods/
+4. Do not put mineauth.*.jar into mods/ !
 
 ### Commands
 
@@ -31,6 +32,12 @@
 - Forge: /forgetPassword
 - Set identifying: /identifierSet \<identifier\>
 - Reset password(op only): /resetPassword \<userName\>
+
+# Localization
+
+- Put your own i18n file into $MINECRAFT_SERVER_PATH/mineauth/i18n/ , Rename it to
+  xxx.json([File example](src/main/resources/assets/mineauth/json/i18n)), And edit
+  $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml.
 
 # Configuration
 
@@ -98,13 +105,13 @@ defaultPassword = "Abc123"
 ## Modify Database
 
 - Mineauth allows h2 database and mysql/mariadb to save player, to modify database settings, you can edit
-  mineauth-server.toml
+  mineauth-server.toml;
 - In case of other database, you can clone this repository, add your database driver into [build.gradle](build.gradle)(
-  just like following), compile it, and get your own mineauth.*.jar
+  just like following), compile it, and get your own mineauth.*.jar.
 
 ![build_gradle_add_driver_dependence.png](build_gradle_add_driver_dependence.png)
 
-- References to create table
+- References to create table:
 
 ```sql
 create schema MINEAUTH;
@@ -125,9 +132,9 @@ create table PLAYERS
 
 ## Database
 
-- Mineauth allows ordinary databases(h2,mysql), you can use your own program to manipulate the database
+- Mineauth allows ordinary databases(h2,mysql), you can use your own program to manipulate the database.
 
 ## Forget password solution
 
 - ForgetPassword command will write the message to $MINECRAFT_SERVER_PATH/mineauth/forget.txt(TIMESTAMP|player's
-  UUID|player's name|player's identification), you can use your own program to read it
+  UUID|player's name|player's identification), you can use your own program to read it.
