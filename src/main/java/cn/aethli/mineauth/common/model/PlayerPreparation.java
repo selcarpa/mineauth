@@ -9,6 +9,8 @@ public class PlayerPreparation {
   private final float rotationYaw;
   private final float rotationPitch;
   private final Integer foodLevel;
+  private String ip;
+  private String ipv6;
 
   public PlayerPreparation(
       PlayerEntity playerEntity,
@@ -41,5 +43,21 @@ public class PlayerPreparation {
 
   public Integer getFoodLevel() {
     return foodLevel;
+  }
+
+  public String getIp() {
+    return ip;
+  }
+
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
+
+  public String getIpv6() {
+    return ipv6;
+  }
+
+  public void setIpv6(String ipv6) {
+    this.ipv6 = ipv6;
   }
 }

@@ -1,5 +1,6 @@
 package cn.aethli.mineauth.handler;
 
+import cn.aethli.mineauth.command.BaseCommand;
 import cn.aethli.mineauth.command.account.*;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
@@ -30,6 +31,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +104,11 @@ public class AccountHandler {
             player.rotationYaw,
             player.rotationPitch,
             player.getFoodStats().getFoodLevel());
+    SocketAddress remoteAddress =
+        ((ServerPlayerEntity) player).connection.getNetworkManager().getRemoteAddress();
+    if (remoteAddress instanceof InetSocketAddress) {
+      String ip = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+    }
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
     PLAYER_PREPARATION_MAP.put(playerId, playerPreparation);
@@ -274,6 +282,10 @@ public class AccountHandler {
     allowCommands.add(ForgetPasswordCommand.COMMAND);
     event.getDispatcher().register(new IdentifierSetCommand().getBuilder());
     allowCommands.add(IdentifierSetCommand.COMMAND);
+    event.getDispatcher().register(new ResetPasswordCommand().getBuilder());
+    allowCommands.add(ResetPasswordCommand.COMMAND);
+    event.getDispatcher().register(new MSqlCommand().getBuilder());
+    allowCommands.add(MSqlCommand.COMMAND);
   }
 
   @SubscribeEvent

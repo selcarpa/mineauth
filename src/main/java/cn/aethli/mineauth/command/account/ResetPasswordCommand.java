@@ -25,7 +25,7 @@ public class ResetPasswordCommand extends BaseCommand {
   }
 
   public ResetPasswordCommand() {
-    super(COMMAND, PARAMETERS);
+    super(COMMAND, PARAMETERS, 4);
   }
 
   @Override

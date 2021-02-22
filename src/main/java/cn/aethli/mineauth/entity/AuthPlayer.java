@@ -11,6 +11,33 @@ public class AuthPlayer extends BaseEntity {
   private LocalDateTime lastLogin;
   private Boolean banned;
   private String identifier;
+  private String ip;
+  private Boolean forget;
+  private Boolean ipv6;
+
+  public Boolean getIpv6() {
+    return ipv6;
+  }
+
+  public void setIpv6(Boolean ipv6) {
+    this.ipv6 = ipv6;
+  }
+
+  public String getIp() {
+    return ip;
+  }
+
+  public void setIp(String ip) {
+    this.ip = ip;
+  }
+
+  public Boolean getForget() {
+    return forget;
+  }
+
+  public void setForget(Boolean forget) {
+    this.forget = forget;
+  }
 
   public String getUsername() {
     return username;

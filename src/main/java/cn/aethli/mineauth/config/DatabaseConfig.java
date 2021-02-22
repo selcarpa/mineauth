@@ -10,6 +10,9 @@ public class DatabaseConfig {
   public final ForgeConfigSpec.ConfigValue<String> columnUuid;
   public final ForgeConfigSpec.ConfigValue<String> columnPassword;
   public final ForgeConfigSpec.ConfigValue<String> columnLastLogin;
+  public final ForgeConfigSpec.ConfigValue<String> columnIp;
+  public final ForgeConfigSpec.ConfigValue<String> columnIpv6;
+  public final ForgeConfigSpec.ConfigValue<String> columnForget;
   public final ForgeConfigSpec.ConfigValue<String> url;
   public final ForgeConfigSpec.ConfigValue<String> user;
   public final ForgeConfigSpec.ConfigValue<String> password;
@@ -39,6 +42,12 @@ public class DatabaseConfig {
 
     this.columnPassword =
         builder.comment("Column for the encrypted password").define("columnPassword", "PASSWORD");
+
+    this.columnForget = builder.comment("").define("columnForget", "FORGET");
+
+    this.columnIp = builder.comment("").define("columnIp", "IP");
+
+    this.columnIpv6 = builder.comment("").define("columnIpv6", "IPV6");
 
     this.url =
         builder

@@ -10,6 +10,7 @@ public class AccountConfig {
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
   public final ForgeConfigSpec.IntValue delay;
   public final ForgeConfigSpec.ConfigValue<String> defaultPassword;
+  public final ForgeConfigSpec.IntValue permissionLevel;
 
   public AccountConfig(ForgeConfigSpec.Builder builder) {
     builder.comment("account module configuration").push("account");
@@ -33,6 +34,11 @@ public class AccountConfig {
         builder
             .comment("ResetPassword will set player's password as it.")
             .define("defaultPassword", "Abc123");
+
+    this.permissionLevel =
+        builder
+            .comment("Permission level for execute some op command(such as /resetPassword)")
+            .defineInRange("permissionLevel", 4, 1, 4);
     builder.pop();
   }
 }

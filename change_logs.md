@@ -1,3 +1,10 @@
+# 0.4.0
+
+### New feature
+
+1. Changed database column
+2.
+
 # 0.3.1
 
 ### Fixed

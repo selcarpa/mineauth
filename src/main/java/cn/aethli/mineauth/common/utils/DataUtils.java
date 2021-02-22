@@ -207,6 +207,27 @@ public class DataUtils {
             new ColumnType("VARCHAR", 5),
             true,
             String.class.getTypeName()));
+    playerTableColumn.add(
+        new TableColumn(
+            "ip",
+            MineauthConfig.databaseConfig.columnIp.get(),
+            new ColumnType("VARCHAR", 15),
+            true,
+            String.class.getTypeName()));
+    playerTableColumn.add(
+        new TableColumn(
+            "ipv6",
+            MineauthConfig.databaseConfig.columnIpv6.get(),
+            new ColumnType("VARCHAR", 45),
+            true,
+            String.class.getTypeName()));
+    playerTableColumn.add(
+        new TableColumn(
+            "forget",
+            MineauthConfig.databaseConfig.columnForget.get(),
+            new ColumnType("VARCHAR", 5),
+            true,
+            String.class.getTypeName()));
     playerEntityMapper.setTableColumns(playerTableColumn);
     playerEntityMapper.setTableName(MineauthConfig.databaseConfig.table.get());
   }
