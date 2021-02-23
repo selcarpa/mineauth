@@ -9,23 +9,26 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayer;
 import static cn.aethli.mineauth.common.utils.MessageUtils.msgToOnePlayerByI18n;
 
-public class ResetPasswordCommand extends BaseCommand {
-  public static final String COMMAND = "resetPassword";
+/** @author 93162 */
+public class SmurfCheckCommand extends BaseCommand {
+  public static final String COMMAND = "SmurfCheck";
   private static final List<String> PARAMETERS = new ArrayList<>();
 
   static {
     PARAMETERS.add("userName");
   }
 
-  public ResetPasswordCommand() {
-    super(COMMAND, PARAMETERS, 1);
+  public SmurfCheckCommand() {
+    super(COMMAND, PARAMETERS);
   }
 
   @Override
@@ -42,10 +45,27 @@ public class ResetPasswordCommand extends BaseCommand {
       if (authPlayer == null) {
         msgToOnePlayerByI18n(player, "login_not_found", userName);
       } else {
-        final String defaultPassword = MineauthConfig.accountConfig.defaultPassword.get();
-        final String digestedPassword = DigestUtils.md5Hex(defaultPassword);
-        authPlayer.setPassword(digestedPassword);
-        DataUtils.updateById(authPlayer);
+        List<AuthPlayer> authPlayers = new ArrayList<>();
+        String ip = authPlayer.getIp();
+        if (StringUtils.isNotEmpty(ip)) {
+          authPlayer = new AuthPlayer();
+          authPlayer.setIp(ip);
+          authPlayers.addAll(DataUtils.select(authPlayer));
+        }
+        String ipv6 = authPlayer.getIpv6();
+        if (StringUtils.isNotEmpty(ipv6)) {
+          authPlayer = new AuthPlayer();
+          authPlayer.setIpv6(ipv6);
+          authPlayers.addAll(DataUtils.select(authPlayer));
+        }
+        if (!authPlayers.isEmpty()) {
+          String userNames =
+              authPlayers.stream().map(AuthPlayer::getUsername).collect(Collectors.joining(","));
+          msgToOnePlayerByI18n(player, "smurf_empty");
+          msgToOnePlayer(player, userNames);
+        } else {
+          msgToOnePlayerByI18n(player, "smurf_list");
+        }
       }
     }
     return 1;

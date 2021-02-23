@@ -3,7 +3,9 @@
 ### New feature
 
 1. Changed database column
-2.
+   1. add ip,ipv6,forget column
+2. Add /smurfCheck command
+3. /forgetPassword command will not write to file
 
 # 0.3.1
 

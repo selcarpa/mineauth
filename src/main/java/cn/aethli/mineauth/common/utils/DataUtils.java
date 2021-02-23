@@ -267,6 +267,7 @@ public class DataUtils {
               + "`='"
               + id
               + "'";
+       LOGGER.debug(sql);
       connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();
@@ -279,6 +280,46 @@ public class DataUtils {
       LOGGER.debug(e.getMessage(), e);
     }
     return false;
+  }
+
+  public static <T extends BaseEntity> List<T> select(T entity) {
+    List<T> results = new ArrayList<>();
+    Class<? extends BaseEntity> aClass = entity.getClass();
+    String whereStatement = buildWhereStatement(entity);
+    ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
+    Connection connection;
+    try {
+      EntityMapper entityMapper =
+          MetadataUtils.getEntityMapperByTypeName(entity.getClass().getTypeName());
+      if (entityMapper == null) {
+        throw new DataRuntimeException(
+            "Class metadata has not been initialized: " + AuthPlayer.class.getTypeName());
+      }
+      String tableName = entityMapper.getTableName();
+
+      String sql = "select * from `" + tableName + "` where " + whereStatement;
+      LOGGER.debug(sql);
+      connection = instance.getConnection();
+      PreparedStatement preparedStatement = connection.prepareStatement(sql);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      Map<String, String> fieldMap = new HashMap<>();
+      if (resultSet.next()) {
+        ResultSetMetaData metaData = resultSet.getMetaData();
+        int count = metaData.getColumnCount();
+        for (int i = 1; i <= count; i++) {
+          fieldMap.put(metaData.getColumnLabel(i), resultSet.getString(i));
+        }
+        close(resultSet, preparedStatement, connection);
+        results.add((T) mapperBy(aClass, fieldMap));
+      } else {
+        close(resultSet, preparedStatement, connection);
+        return results;
+      }
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+      LOGGER.debug(e.getMessage(), e);
+    }
+    return results;
   }
 
   public static <T extends BaseEntity> T selectOne(T entity) {
@@ -296,6 +337,7 @@ public class DataUtils {
       String tableName = entityMapper.getTableName();
 
       String sql = "select * from `" + tableName + "` where " + whereStatement + " LIMIT 1";
+      LOGGER.debug(sql);
       connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       ResultSet resultSet = preparedStatement.executeQuery();
@@ -334,6 +376,7 @@ public class DataUtils {
       String tableName = entityMapper.getTableName();
 
       String sql = "insert into `" + tableName + "` " + insertStatement;
+      LOGGER.debug(sql);
       connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();

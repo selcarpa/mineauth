@@ -13,13 +13,13 @@ public class AuthPlayer extends BaseEntity {
   private String identifier;
   private String ip;
   private Boolean forget;
-  private Boolean ipv6;
+  private String ipv6;
 
-  public Boolean getIpv6() {
+  public String getIpv6() {
     return ipv6;
   }
 
-  public void setIpv6(Boolean ipv6) {
+  public void setIpv6(String ipv6) {
     this.ipv6 = ipv6;
   }
 

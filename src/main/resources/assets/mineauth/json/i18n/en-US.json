@@ -18,5 +18,7 @@
   "identifier_not_login_yet": "You have not login yet, Could not set identifier",
   "identifier_set_success": "identifier set success! ",
   "forget_password_has_login_yet": "You have login yet! Could not use this command",
+  "smurf_empty": "No secondary account found",
+  "smurf_list": "The following secondary account were found(Based on the same ip, it may be inaccurate)",
   "permission_deny": "permission deny"
 }

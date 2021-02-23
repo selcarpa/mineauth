@@ -10,11 +10,11 @@ import java.util.List;
 
 /** @author 93162 */
 public class MSqlCommand extends BaseCommand {
-    public static final String COMMAND = "resetPassword";
+    public static final String COMMAND = "msql";
     private static final List<String> PARAMETERS = new ArrayList<>();
 
     static {
-        PARAMETERS.add("userName");
+        PARAMETERS.add("sql");
     }
 
 

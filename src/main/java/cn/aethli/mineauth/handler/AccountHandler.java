@@ -1,6 +1,5 @@
 package cn.aethli.mineauth.handler;
 
-import cn.aethli.mineauth.command.BaseCommand;
 import cn.aethli.mineauth.command.account.*;
 import cn.aethli.mineauth.common.model.PlayerPreparation;
 import cn.aethli.mineauth.common.utils.I18nUtils;
@@ -31,8 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +47,13 @@ public class AccountHandler {
   private static final Map<String, AuthPlayer> AUTH_PLAYER_MAP = new ConcurrentHashMap<>();
   private static final Map<String, PlayerPreparation> PLAYER_PREPARATION_MAP =
       new ConcurrentHashMap<>();
+  //  private static final String ipv4Regex =
+  //      "(2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2}(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}";
+  //  public static final Pattern IPV4_PATTERN;
+  //
+  //  static {
+  //    IPV4_PATTERN = Pattern.compile(ipv4Regex);
+  //  }
 
   public AccountHandler() {
     MetadataUtils.initMetadata();
@@ -107,7 +112,17 @@ public class AccountHandler {
     SocketAddress remoteAddress =
         ((ServerPlayerEntity) player).connection.getNetworkManager().getRemoteAddress();
     if (remoteAddress instanceof InetSocketAddress) {
-      String ip = ((InetSocketAddress) remoteAddress).getAddress().getHostAddress();
+      InetAddress address = ((InetSocketAddress) remoteAddress).getAddress();
+      if (address instanceof Inet4Address) {
+        playerPreparation.setIp(address.getHostAddress());
+      } else if (address instanceof Inet6Address) {
+        playerPreparation.setIpv6(address.getHostAddress());
+      }
+      //      if (IPV4_PATTERN.matcher(ip).matches()) {
+      //        playerPreparation.setIp(ip);
+      //      }else {
+      //        playerPreparation.setIpv6(ip);
+      //      }
     }
     String playerId = player.getUniqueID().toString();
     AUTH_PLAYER_MAP.remove(playerId);
@@ -286,12 +301,14 @@ public class AccountHandler {
     allowCommands.add(ResetPasswordCommand.COMMAND);
     event.getDispatcher().register(new MSqlCommand().getBuilder());
     allowCommands.add(MSqlCommand.COMMAND);
+    event.getDispatcher().register(new SmurfCheckCommand().getBuilder());
+    allowCommands.add(SmurfCheckCommand.COMMAND);
   }
 
   @SubscribeEvent
   public void onFMLServerStoppingEvent(FMLServerStoppingEvent event) throws IOException {
     kickOutScheduler.shutdown();
-    ForgetPasswordCommand.closeRandomAccessFile();
+    //    ForgetPasswordCommand.closeRandomAccessFile();
   }
 
   private static class KickOutThreadFactory implements ThreadFactory {
