@@ -1,6 +1,7 @@
 package cn.aethli.mineauth.config;
 
 import cn.aethli.mineauth.command.account.ChangePasswordCommand;
+import cn.aethli.mineauth.command.account.MSqlCommand;
 import cn.aethli.mineauth.command.account.RegisterCommand;
 import net.minecraftforge.common.ForgeConfigSpec;
 
@@ -8,6 +9,7 @@ public class AccountConfig {
 
   public final ForgeConfigSpec.BooleanValue enableRegister;
   public final ForgeConfigSpec.BooleanValue enableChangePassword;
+  public final ForgeConfigSpec.BooleanValue enableMSql;
   public final ForgeConfigSpec.IntValue delay;
   public final ForgeConfigSpec.ConfigValue<String> defaultPassword;
   public final ForgeConfigSpec.IntValue permissionLevel;
@@ -23,6 +25,11 @@ public class AccountConfig {
         builder
             .comment("Enable or disable the /" + ChangePasswordCommand.COMMAND + " command.")
             .define("enableChangePassword", true);
+
+    this.enableMSql =
+        builder
+            .comment("EnAble or disable the /" + MSqlCommand.COMMAND + " command")
+            .define("enableMSql", false);
 
     this.delay =
         builder

@@ -20,5 +20,6 @@
   "forget_password_has_login_yet": "您已经登录, 无法使用此命令",
   "smurf_empty": "未找到玩家小号",
   "smurf_list": "找到以下小号(基于相同ip判断, 可能不准确)",
+  "sql_not_support": "不支持该sql语句, 仅支持insert, select, delete 和update",
   "permission_deny": "权限不足"
 }

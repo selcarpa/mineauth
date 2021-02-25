@@ -20,5 +20,9 @@
   "forget_password_has_login_yet": "You have login yet! Could not use this command",
   "smurf_empty": "No secondary account found",
   "smurf_list": "The following secondary account were found(Based on the same ip, it may be inaccurate)",
+  "sql_not_support": "Does not support this sql statement, Only insert, select, delete and update can be used",
+  "sql_execute_success": "Sql execute success! ",
+  "sql_execute_fail": "Sql execute fail: %s",
+  "sql_effect_count": "%s row affected",
   "permission_deny": "permission deny"
 }

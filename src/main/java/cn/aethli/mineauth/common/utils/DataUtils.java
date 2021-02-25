@@ -232,6 +232,34 @@ public class DataUtils {
     playerEntityMapper.setTableName(MineauthConfig.databaseConfig.table.get());
   }
 
+  public static int executeUpdate(String sql) throws SQLException {
+    ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
+      Connection connection = instance.getConnection();
+      PreparedStatement preparedStatement = connection.prepareStatement(sql);
+      int i = preparedStatement.executeUpdate();
+      close(null, preparedStatement, connection);
+      return i;
+  }
+
+  public static List<Map<String, String>> executeSelect(String sql) throws SQLException {
+    ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
+      Connection connection = instance.getConnection();
+      PreparedStatement preparedStatement = connection.prepareStatement(sql);
+      ResultSet resultSet = preparedStatement.executeQuery();
+      List<Map<String, String>> result = new ArrayList<>();
+      ResultSetMetaData md = resultSet.getMetaData();
+      int columnCount = md.getColumnCount();
+      while (resultSet.next()) {
+        Map<String, String> rowData = new HashMap<>();
+        for (int i = 1; i <= columnCount; i++) {
+          rowData.put(md.getColumnName(i), resultSet.getString(i));
+        }
+        result.add(rowData);
+      }
+      close(resultSet, preparedStatement, connection);
+      return result;
+  }
+
   public static <T extends BaseEntity> boolean updateById(T entity) {
     String id = entity.getId();
     if (StringUtils.isEmpty(id)) {
@@ -267,7 +295,7 @@ public class DataUtils {
               + "`='"
               + id
               + "'";
-       LOGGER.debug(sql);
+      LOGGER.debug(sql);
       connection = instance.getConnection();
       PreparedStatement preparedStatement = connection.prepareStatement(sql);
       int i = preparedStatement.executeUpdate();
