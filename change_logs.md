@@ -3,10 +3,16 @@
 ### New feature
 
 1. Changed database column
-   1. add ip,ipv6,forget column
+    1. add ip,ipv6,forget column
 2. Add /smurfCheck command
 3. /forgetPassword command will not write to file
 
+### Attention:
+
+1. Internal database file is not compatible, you should update it([How to update](0.3.1_to_0.4.0.md))
+2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, In case of modified it, you should backup
+   and re-edit it
+   
 # 0.3.1
 
 ### Fixed
@@ -36,7 +42,7 @@
 
 ### Attention:
 
-1. internal database file is fully compatible, you can keep mineauth/ folder
+1. Internal database file is fully compatible, you can keep mineauth/ folder
 2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, In case of modified it, you should backup
    and re-edit it
 
@@ -55,7 +61,7 @@
 
 ### Attention:
 
-1. internal database file is fully compatible, you can keep mineauth/ folder
+1. Internal database file is fully compatible, you can keep mineauth/ folder
 2. $MINECRAFT_SERVER_PATH/world/serverconfig/mineauth-server.toml is updated, In case of modified it, you should backup
    and re-edit it
 
