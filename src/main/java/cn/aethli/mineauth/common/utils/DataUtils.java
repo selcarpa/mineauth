@@ -233,31 +233,33 @@ public class DataUtils {
   }
 
   public static int executeUpdate(String sql) throws SQLException {
+    LOGGER.info("execute update sql:{}",sql);
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
-      Connection connection = instance.getConnection();
-      PreparedStatement preparedStatement = connection.prepareStatement(sql);
-      int i = preparedStatement.executeUpdate();
-      close(null, preparedStatement, connection);
-      return i;
+    Connection connection = instance.getConnection();
+    PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    int i = preparedStatement.executeUpdate();
+    close(null, preparedStatement, connection);
+    return i;
   }
 
   public static List<Map<String, String>> executeSelect(String sql) throws SQLException {
+    LOGGER.info("execute select sql:{}", sql);
     ExpansionAbleConnectionPool instance = ExpansionAbleConnectionPool.getInstance();
-      Connection connection = instance.getConnection();
-      PreparedStatement preparedStatement = connection.prepareStatement(sql);
-      ResultSet resultSet = preparedStatement.executeQuery();
-      List<Map<String, String>> result = new ArrayList<>();
-      ResultSetMetaData md = resultSet.getMetaData();
-      int columnCount = md.getColumnCount();
-      while (resultSet.next()) {
-        Map<String, String> rowData = new HashMap<>();
-        for (int i = 1; i <= columnCount; i++) {
-          rowData.put(md.getColumnName(i), resultSet.getString(i));
-        }
-        result.add(rowData);
+    Connection connection = instance.getConnection();
+    PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    ResultSet resultSet = preparedStatement.executeQuery();
+    List<Map<String, String>> result = new ArrayList<>();
+    ResultSetMetaData md = resultSet.getMetaData();
+    int columnCount = md.getColumnCount();
+    while (resultSet.next()) {
+      Map<String, String> rowData = new HashMap<>();
+      for (int i = 1; i <= columnCount; i++) {
+        rowData.put(md.getColumnName(i), resultSet.getString(i));
       }
-      close(resultSet, preparedStatement, connection);
-      return result;
+      result.add(rowData);
+    }
+    close(resultSet, preparedStatement, connection);
+    return result;
   }
 
   public static <T extends BaseEntity> boolean updateById(T entity) {

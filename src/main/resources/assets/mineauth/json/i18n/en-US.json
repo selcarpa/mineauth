@@ -3,6 +3,7 @@
   "deny": "Please login within %s second.",
   "banned": "You've been banned. Please contact the admins.",
   "welcome": "Welcome to this server. use /login <password> to login or use /register to register.",
+  "success": "Successful operation",
   "login_wrong_password": "Wrong password. Please try again.",
   "login_usage": "/login <password> - To login",
   "login_not_found": "%s has not registered on this server.",
