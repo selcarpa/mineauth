@@ -279,30 +279,30 @@ public class AccountHandler {
 
   @SubscribeEvent
   public void onRegisterCommandsEvent(RegisterCommandsEvent event) {
-    event.getDispatcher().register(new LoginCommand().getBuilder());
-    allowCommands.add(LoginCommand.COMMAND);
-    if (MineauthConfig.accountConfig.enableRegister.get()) {
-      event.getDispatcher().register(new RegisterCommand().getBuilder());
-      allowCommands.add(RegisterCommand.COMMAND);
-    }
-    if (MineauthConfig.accountConfig.enableChangePassword.get()) {
-      event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
-      allowCommands.add(ChangePasswordCommand.COMMAND);
-    }
-    event.getDispatcher().register(new RegisterHelpCommand().getBuilder());
-    allowCommands.add(RegisterHelpCommand.COMMAND);
-    event.getDispatcher().register(new LoginHelpCommand().getBuilder());
-    allowCommands.add(LoginHelpCommand.COMMAND);
+    event.getDispatcher().register(new BanSmurfCommand().getBuilder());
+    allowCommands.add(BanSmurfCommand.COMMAND);
+    event.getDispatcher().register(new ChangePasswordCommand().getBuilder());
+    allowCommands.add(ChangePasswordCommand.COMMAND);
     event.getDispatcher().register(new ForgetPasswordCommand().getBuilder());
     allowCommands.add(ForgetPasswordCommand.COMMAND);
     event.getDispatcher().register(new IdentifierSetCommand().getBuilder());
     allowCommands.add(IdentifierSetCommand.COMMAND);
-    event.getDispatcher().register(new ResetPasswordCommand().getBuilder());
-    allowCommands.add(ResetPasswordCommand.COMMAND);
+    event.getDispatcher().register(new LoginCommand().getBuilder());
+    allowCommands.add(LoginCommand.COMMAND);
+    event.getDispatcher().register(new LoginHelpCommand().getBuilder());
+    allowCommands.add(LoginHelpCommand.COMMAND);
     event.getDispatcher().register(new MSqlCommand().getBuilder());
     allowCommands.add(MSqlCommand.COMMAND);
+    event.getDispatcher().register(new RegisterCommand().getBuilder());
+    allowCommands.add(RegisterCommand.COMMAND);
+    event.getDispatcher().register(new RegisterHelpCommand().getBuilder());
+    allowCommands.add(RegisterHelpCommand.COMMAND);
+    event.getDispatcher().register(new ResetPasswordCommand().getBuilder());
+    allowCommands.add(ResetPasswordCommand.COMMAND);
     event.getDispatcher().register(new SmurfCheckCommand().getBuilder());
     allowCommands.add(SmurfCheckCommand.COMMAND);
+    event.getDispatcher().register(new UnbanCommand().getBuilder());
+    allowCommands.add(UnbanCommand.COMMAND);
   }
 
   @SubscribeEvent
